@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
-import AnimatedHero from "./components/animated-hero";
+import AnimatedHero from "./components/animated-hero"
 import AnimatedGallery from "./components/animated-gallery"
-import AnimatedTeamSection from "./components/animated-team";
-import NavBar from "./components/navbar";
-import AnimatedSocialSection from "./components/animated-social";
+import AnimatedTeamSection from "./components/animated-team"
+import NavBar from "./components/navbar"
+import AnimatedSocialSection from "./components/animated-social"
+import AnimatedCharitySection from "./components/animated-charty"
 
 interface CharityProject {
   id: number
@@ -17,20 +18,6 @@ interface CharityProject {
   image: string
   category: string
 }
-
-interface TeamMember {
-  id: number
-  name: string
-  position: string
-  image: string
-  social: {
-    linkedin?: string
-    twitter?: string
-    instagram?: string
-  }
-}
-
-
 
 function ProductCard({
   product,
@@ -141,55 +128,7 @@ function CharityCard({ project }: { project: CharityProject }) {
   )
 }
 
-function TeamCard({ member }: { member: TeamMember }) {
-  return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-all duration-300 group">
-      <div className="relative h-64 overflow-hidden">
-        <Image
-          src={member.image || "/placeholder.svg"}
-          alt={member.name}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <div className="absolute bottom-4 left-4 right-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-          <div className="flex space-x-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            {member.social.linkedin && (
-              <button className="bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition-colors">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z" />
-                </svg>
-              </button>
-            )}
-            {member.social.twitter && (
-              <button className="bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition-colors">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
-                </svg>
-              </button>
-            )}
-            {member.social.instagram && (
-              <button className="bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition-colors">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 2.163c2.67 0 2.987.01 4.042.059 2.71.123 3.976 1.409 4.099 4.099.048 1.054.057 1.37.057 4.042 0 2.672-.01 2.988-.057 4.042-.123 2.69-1.387 3.975-4.1 4.099-1.054.048-1.37.058-4.041.058-2.67 0-2.987-.01-4.04-.058-2.717-.124-3.977-1.416-4.1-4.1-.048-1.054-.058-1.37-.058-4.041 0-2.67.01-2.986.058-4.04.124-2.69 1.387-3.977 4.1-4.1 1.054-.048 1.37-.058 4.04-.058zM10 0C7.284 0 6.944.012 5.877.06 2.246.227.227 2.242.061 5.877.01 6.944 0 7.284 0 10s.012 3.057.06 4.123c.167 3.632 2.182 5.65 5.817 5.817 1.067.048 1.407.06 4.123.06s3.057-.012 4.123-.06c3.629-.167 5.652-2.182 5.816-5.817.05-1.066.061-1.407.061-4.123s-.012-3.056-.06-4.122C19.777 2.249 17.76.228 14.124.06 13.057.01 12.716 0 10 0zm0 4.865a5.135 5.135 0 100 10.27 5.135 5.135 0 000-10.27zm0 8.468a3.333 3.333 0 110-6.666 3.333 3.333 0 010 6.666zm5.338-9.87a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z" />
-                </svg>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="p-6 text-center">
-        <h3 className="text-xl font-bold text-gray-800 mb-1">{member.name}</h3>
-        <p className="text-green-600 font-medium">{member.position}</p>
-      </div>
-    </div>
-  )
-}
-
-
 export default function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0)
-
   const products = [
     {
       id: 1,
@@ -263,81 +202,6 @@ export default function Home() {
       category: "Healthcare",
     },
   ]
-
-  const teamMembers: TeamMember[] = [
-    {
-      id: 1,
-      name: "Amanda N. Shelima",
-      position: "Founder & Head Ourtala",
-      image: "/images/amanda.jpg",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#",
-      },
-    },
-    {
-      id: 2,
-      name: "Freya Visesa S.",
-      position: "Garden Designer",
-      image: "/images/profile2.jpg",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-      },
-    },
-    {
-      id: 3,
-      name: "Lily Waters",
-      position: "Sustainability Expert",
-      image: "/images/profile3.jpg",
-      social: {
-        linkedin: "#",
-        instagram: "#",
-      },
-    },
-    {
-      id: 4,
-      name: "Oliver Seed",
-      position: "Community Coordinator",
-      image: "/images/profile4.jpg",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#",
-      },
-    },
-    {
-      id: 5,
-      name: "ujang",
-      position: "Community Coordinator",
-      image: "/placeholder.svg?height=300&width=300",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#",
-      },
-    },
-
-
-
-  ]
-
-  const galleryImages = [
-    "/images/Galery1.jpg",
-    "/images/Galery2.jpg",
-    "/images/Galery3.jpg",
-    "/images/Galery4.jpg",
-    "/placeholder.svg?height=400&width=600",
-    "/placeholder.svg?height=400&width=600",
-  ]
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % galleryImages.length)
-    }, 4000)
-    return () => clearInterval(interval)
-  }, [])
 
   return (
     <main className="min-h-screen bg-amber-50">
@@ -553,7 +417,8 @@ export default function Home() {
       </section>
 
       {/* Products Section */}
-      <section id="products" className="py-20 bg-white">
+
+      {/* <section id="products" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Our Products</h2>
@@ -574,154 +439,19 @@ export default function Home() {
             </button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Charity Section */}
-      <section id="charity" className="py-20 bg-amber-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Our Garden Projects</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Supporting community gardens and green initiatives to make our world a better place
-            </p>
-          </div>
+      <AnimatedCharitySection/>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
-            {charityProjects.map((project) => (
-              <CharityCard key={project.id} project={project} />
-            ))}
-          </div>
 
-          <div className="text-center mt-12">
-            <button className="bg-gray-800 text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105">
-              view all projects
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Team Section */}
-      <AnimatedTeamSection />
+      <AnimatedTeamSection/>
 
       {/* Gallery Section */}
       <AnimatedGallery />
 
       {/* Social Media Section */}
-     <AnimatedSocialSection
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 bg-gray-800 text-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Get In Touch</h2>
-            <p className="text-xl opacity-90 max-w-3xl mx-auto">
-              Have questions about our products or need gardening advice? We're here to help!
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
-              <div className="space-y-6">
-                <div className="flex items-center">
-                  <div className="bg-green-600 w-12 h-12 rounded-full flex items-center justify-center mr-4">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Address</h4>
-                    <p className="opacity-80">123 Garden Street, Green City, GC 12345</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center">
-                  <div className="bg-green-600 w-12 h-12 rounded-full flex items-center justify-center mr-4">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Phone</h4>
-                    <p className="opacity-80">+1 (555) 123-4567</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center">
-                  <div className="bg-green-600 w-12 h-12 rounded-full flex items-center justify-center mr-4">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Email</h4>
-                    <p className="opacity-80">hello@blumegarden.com</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <form className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    placeholder="First Name"
-                    className="w-full px-4 py-3 rounded-full bg-gray-700 border border-gray-600 focus:border-green-500 focus:outline-none transition-colors"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Last Name"
-                    className="w-full px-4 py-3 rounded-full bg-gray-700 border border-gray-600 focus:border-green-500 focus:outline-none transition-colors"
-                  />
-                </div>
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  className="w-full px-4 py-3 rounded-full bg-gray-700 border border-gray-600 focus:border-green-500 focus:outline-none transition-colors"
-                />
-                <input
-                  type="text"
-                  placeholder="Subject"
-                  className="w-full px-4 py-3 rounded-full bg-gray-700 border border-gray-600 focus:border-green-500 focus:outline-none transition-colors"
-                />
-                <textarea
-                  rows={5}
-                  placeholder="Your Message"
-                  className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:outline-none transition-colors resize-none"
-                ></textarea>
-                <button
-                  type="submit"
-                  className="w-full bg-green-600 text-white py-3 rounded-full font-semibold hover:bg-green-700 transition-all duration-300 transform hover:scale-105"
-                >
-                  send message
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AnimatedSocialSection />
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
@@ -740,43 +470,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      <style jsx>{`
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-fade-in-up {
-          animation: fade-in-up 0.6s ease-out forwards;
-        }
-        
-        .delay-300 {
-          animation-delay: 0.3s;
-        }
-        
-        .delay-500 {
-          animation-delay: 0.5s;
-        }
-        
-        .delay-700 {
-          animation-delay: 0.7s;
-        }
-        
-        .delay-1000 {
-          animation-delay: 1s;
-        }
-        
-        .delay-1500 {
-          animation-delay: 1.5s;
-        }
-      `}</style>
     </main>
   )
 }
