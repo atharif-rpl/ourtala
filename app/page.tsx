@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
+import AnimatedHero from "./components/animated-hero";
+import AnimatedGallery from "./components/animated-gallery"
+import AnimatedTeamSection from "./components/animated-team";
+import NavBar from "./components/navbar";
 
 interface CharityProject {
   id: number
@@ -25,108 +29,7 @@ interface TeamMember {
   }
 }
 
-function NavBar() {
-  const [activeSection, setActiveSection] = useState("home")
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [rotationAngle, setRotationAngle] = useState(0)
 
-  const sections = [
-    { id: "home", label: "home" },
-    { id: "about", label: "about" },
-    { id: "products", label: "products" },
-    { id: "charity", label: "charity" },
-    { id: "team", label: "team" },
-    { id: "gallery", label: "gallery" },
-    { id: "social", label: "social" },
-    { id: "contact", label: "contact" },
-  ]
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setIsScrolled(scrollPosition > 50)
-      // --- TAMBAHKAN LOGIKA BARU DI SINI ---
-      // Atur sudut rotasi berdasarkan posisi scroll.
-      // Angka 0.5 adalah "faktor kecepatan", Anda bisa mengubahnya
-      // menjadi lebih besar (lebih cepat) atau lebih kecil (lebih lambat).
-      const newAngle = scrollPosition * 0.5;
-      setRotationAngle(newAngle);
-      // ------------------------------------
-
-      // Update active section based on scroll position (kode ini sudah ada)
-      const sectionElements = sections.map((section) => ({
-        id: section.id,
-        element: document.getElementById(section.id),
-      }))
-
-
-      const currentSection = sectionElements.find((section) => {
-        if (section.element) {
-          const rect = section.element.getBoundingClientRect()
-          return rect.top <= 100 && rect.bottom >= 100
-        }
-        return false
-      })
-
-      if (currentSection) {
-        setActiveSection(currentSection.id)
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, []) // dependencies array tetap sama
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
-  return (
-    <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md shadow-lg" : "bg-transparent"
-        }`}
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
-          <a href="#home"
-            onClick={() => scrollToSection('home')}
-            className="flex items-center" // Hapus kelas rotasi & transisi dari sini
-            style={{
-              transform: `rotate(${rotationAngle}deg)`,
-            }}
-          >
-            <Image
-              src="/images/ourtalah.png" // Sesuaikan dengan nama file logo Anda
-              alt="Ourtala Logo"
-              width={90} // Sesuaikan lebar logo
-              height={10} // Sesuaikan tinggi logo
-              className="h-auto" // Menjaga rasio aspek gambar
-            />
-          </a>
-          <div className="hidden md:flex space-x-4">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => scrollToSection(section.id)}
-                className={`transition-all duration-300 px-6 py-2 rounded-full ${activeSection === section.id
-                  ? "bg-gray-800 text-white"
-                  : isScrolled
-                    ? "bg-white text-gray-800 hover:bg-gray-100"
-                    : "bg-white/80 text-gray-800 hover:bg-white"
-                  }`}
-              >
-                {section.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </nav>
-  )
-}
 
 function ProductCard({
   product,
@@ -281,6 +184,7 @@ function TeamCard({ member }: { member: TeamMember }) {
     </div>
   )
 }
+
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -439,55 +343,7 @@ export default function Home() {
       <NavBar />
 
       {/* Hero Section */}
-      <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500"><rect fill="%234ade80" width="1000" height="500"/><circle fill="%2365a30d" cx="100" cy="100" r="20"/><circle fill="%2365a30d" cx="300" cy="150" r="15"/><circle fill="%2365a30d" cx="500" cy="80" r="25"/><circle fill="%2365a30d" cx="700" cy="200" r="18"/><circle fill="%2365a30d" cx="900" cy="120" r="22"/></svg>\')',
-          }}
-        ></div>
-
-        {/* Animated background elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-4 h-4 bg-yellow-200 rounded-full animate-pulse"></div>
-          <div className="absolute top-32 right-32 w-3 h-3 bg-yellow-200 rounded-full animate-bounce delay-1000"></div>
-          <div className="absolute top-40 left-1/3 w-5 h-5 bg-yellow-200 rounded-full animate-pulse delay-500"></div>
-          <div className="absolute bottom-32 right-20 w-4 h-4 bg-yellow-200 rounded-full animate-bounce delay-1500"></div>
-          <div className="absolute bottom-40 left-1/4 w-3 h-3 bg-yellow-200 rounded-full animate-pulse delay-700"></div>
-        </div>
-
-        <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 animate-fade-in-up">
-            Ourtala<span className="text-5xl md:text-7xl align-top">*</span>
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 animate-fade-in-up delay-300 tracking-widest">gardens for everyone</p>
-          <p className="text-lg mb-12 opacity-90 animate-fade-in-up delay-500">
-            no yard doesn&apos;t have to mean no garden! let your flowers Ourtala*
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up delay-700">
-            <button
-              onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-              className="bg-white text-gray-800 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105"
-            >
-              learn more
-            </button>
-            <button
-              onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-              className="bg-gray-800 text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105"
-            >
-              shop now
-            </button>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
-      </section>
+      <AnimatedHero />
 
       {/* About Section */}
       <section id="about" className="py-20 bg-amber-50 relative overflow-hidden">
@@ -504,7 +360,7 @@ export default function Home() {
               </span>
             </div>
             <h2 className="text-4xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
-              About Our<span className="text-green-600">Tula</span>
+              About Our<span className="text-green-600">Tala</span>
               <span className="text-3xl md:text-5xl align-top">*</span>
             </h2>
             <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
@@ -744,225 +600,10 @@ export default function Home() {
       </section>
 
       {/* Team Section */}
-      <section id="team" className="py-20 bg-white relative overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute top-10 right-10 w-20 h-20 bg-green-200/30 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 left-20 w-32 h-32 bg-yellow-200/20 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-green-300/20 rounded-full blur-lg"></div>
-        <div className="absolute top-20 left-1/3 w-12 h-12 bg-yellow-300/30 rounded-full blur-md"></div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-20">
-            <div className="inline-block mb-4">
-              <span className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium tracking-wide uppercase">
-                Our Team
-              </span>
-            </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
-              Meet Our <span className="text-green-600">Green</span> Team
-              <span className="text-3xl md:text-5xl align-top">*</span>
-            </h2>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Passionate plant lovers dedicated to bringing nature into your home
-              <span className="block mt-2 text-lg text-gray-500">
-                United by our love for gardening and sustainable living
-              </span>
-            </p>
-          </div>
-
-          {/* Team grid with enhanced styling */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {teamMembers.map((member, index) => (
-              <div key={member.id} className="group relative">
-                {/* Floating number indicator */}
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-110">
-                  {index + 1}
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-500 border border-green-50 hover:border-green-200 hover:shadow-2xl">
-                  <div className="relative h-72 overflow-hidden">
-                    <Image
-                      src={member.image || "/placeholder.svg"}
-                      alt={member.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                    {/* Social media icons */}
-                    <div className="absolute bottom-4 left-4 right-4 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300">
-                      <div className="flex justify-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                        {member.social.linkedin && (
-                          <button className="bg-white/90 backdrop-blur-sm text-gray-800 p-3 rounded-full hover:bg-green-600 hover:text-white transition-all duration-300 transform hover:scale-110 shadow-lg">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z" />
-                            </svg>
-                          </button>
-                        )}
-                        {member.social.twitter && (
-                          <button className="bg-white/90 backdrop-blur-sm text-gray-800 p-3 rounded-full hover:bg-green-600 hover:text-white transition-all duration-300 transform hover:scale-110 shadow-lg">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
-                            </svg>
-                          </button>
-                        )}
-                        {member.social.instagram && (
-                          <button className="bg-white/90 backdrop-blur-sm text-gray-800 p-3 rounded-full hover:bg-green-600 hover:text-white transition-all duration-300 transform hover:scale-110 shadow-lg">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M10 2.163c2.67 0 2.987.01 4.042.059 2.71.123 3.976 1.409 4.099 4.099.048 1.054.057 1.37.057 4.042 0 2.672-.01 2.988-.057 4.042-.123 2.69-1.387 3.975-4.1 4.099-1.054.048-1.37.058-4.041.058-2.67 0-2.987-.01-4.04-.058-2.717-.124-3.977-1.416-4.1-4.1-.048-1.054-.058-1.37-.058-4.041 0-2.67.01-2.986.058-4.04.124-2.69 1.387-3.977 4.1-4.1 1.054-.048 1.37-.058 4.04-.058zM10 0C7.284 0 6.944.012 5.877.06 2.246.227.227 2.242.061 5.877.01 6.944 0 7.284 0 10s.012 3.057.06 4.123c.167 3.632 2.182 5.65 5.817 5.817 1.067.048 1.407.06 4.123.06s3.057-.012 4.123-.06c3.629-.167 5.652-2.182 5.816-5.817.05-1.066.061-1.407.061-4.123s-.012-3.056-.06-4.122C19.777 2.249 17.76.228 14.124.06 13.057.01 12.716 0 10 0zm0 4.865a5.135 5.135 0 100 10.27 5.135 5.135 0 000-10.27zm0 8.468a3.333 3.333 0 110-6.666 3.333 3.333 0 010 6.666zm5.338-9.87a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z" />
-                            </svg>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Role badge */}
-                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                        Team Member
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-8 text-center relative">
-                    {/* Background pattern */}
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-green-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-
-                    <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-green-600 transition-colors duration-300">
-                      {member.name}
-                    </h3>
-                    <p className="text-green-600 font-semibold mb-4 text-lg">
-                      {member.position}
-                    </p>
-
-                    {/* Decorative element */}
-                    <div className="w-12 h-1 bg-green-200 rounded-full mx-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Team stats section */}
-          <div className="bg-gradient-to-br from-green-50 to-white rounded-3xl p-10 shadow-lg border border-green-100 relative overflow-hidden">
-            {/* Background decorative pattern */}
-            <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-green-200/20 to-transparent rounded-full -mr-20 -mt-20"></div>
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-yellow-200/20 to-transparent rounded-full -ml-16 -mb-16"></div>
-
-            <div className="relative z-10">
-              <div className="text-center mb-12">
-                <h3 className="text-3xl font-bold text-gray-800 mb-4">Why Our Team Rocks</h3>
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  Combined experience and passion that makes the difference in everything we do
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div className="text-center group">
-                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-green-100 hover:shadow-lg transition-all duration-300 hover:border-green-200">
-                    <div className="text-4xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform duration-300">
-                      15+
-                    </div>
-                    <div className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-                      Years Experience
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center group">
-                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-green-100 hover:shadow-lg transition-all duration-300 hover:border-green-200">
-                    <div className="text-4xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform duration-300">
-                      500+
-                    </div>
-                    <div className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-                      Gardens Created
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center group">
-                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-green-100 hover:shadow-lg transition-all duration-300 hover:border-green-200">
-                    <div className="text-4xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform duration-300">
-                      24/7
-                    </div>
-                    <div className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-                      Support Available
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center group">
-                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-green-100 hover:shadow-lg transition-all duration-300 hover:border-green-200">
-                    <div className="text-4xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform duration-300">
-                      100%
-                    </div>
-                    <div className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-                      Satisfaction Rate
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Call to action */}
-              <div className="text-center mt-12 pt-8 border-t border-green-100">
-                <p className="text-lg text-gray-600 mb-6">
-                  Want to join our growing team of garden enthusiasts?
-                </p>
-                <button className="bg-gray-800 text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                  Join Our Team
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AnimatedTeamSection />
 
       {/* Gallery Section */}
-      <section id="gallery" className="py-20 bg-amber-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Garden Gallery</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Beautiful spaces created with our products and community projects
-            </p>
-          </div>
-
-          <div className="relative max-w-4xl mx-auto">
-            <div className="overflow-hidden rounded-lg shadow-lg">
-              <div
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {galleryImages.map((image, index) => (
-                  <div key={index} className="w-full flex-shrink-0">
-                    <Image
-                      src={image || "/placeholder.svg"}
-                      alt={`Gallery image ${index + 1}`}
-                      width={800}
-                      height={500}
-                      className="w-full h-96 object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Gallery navigation */}
-            <div className="flex justify-center mt-6 space-x-2">
-              {galleryImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === index ? "bg-gray-800" : "bg-gray-300"
-                    }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <AnimatedGallery />
 
       {/* Social Media Section */}
       <section id="social" className="py-20 bg-green-600 text-white">

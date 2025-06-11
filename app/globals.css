@@ -10,6 +10,14 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-modak: var(--font-modak);
+  
+}
+.font-modak {
+  font-family: var(--font-modak);
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: green;
+  color: ; /* Membuat warna isian teks menjadi transparan */
 }
 
 @media (prefers-color-scheme: dark) {

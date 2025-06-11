@@ -1,5 +1,8 @@
+// File: app/layout.tsx
+
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// 1. Impor font Modak bersama dengan font lainnya
+import { Geist, Geist_Mono, Modak } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -10,6 +13,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// 2. Konfigurasi font Modak
+const modak = Modak({
+  variable: "--font-modak",
+  subsets: ["latin"],
+  weight: "400", // Font Modak hanya punya satu weight: 400
 });
 
 export const metadata: Metadata = {
@@ -24,8 +34,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* 3. Tambahkan variabel font Modak ke body */}
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${modak.variable} antialiased`}
       >
         {children}
       </body>
