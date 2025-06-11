@@ -157,7 +157,7 @@ export default function NavBar() {
                 alt="Ourtala Logo"
                 width={120}
                 height={40}
-                className="h-auto relative z-10"
+                className="h-20 w-20 relative z-10"
                 priority
               />
               <div className="absolute inset-0 border-2 border-green-400/30 rounded-full opacity-0 group-hover:opacity-100 animate-spin-slow transition-opacity duration-300"></div>

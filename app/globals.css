@@ -15,7 +15,7 @@
 }
 .font-modak {
   font-family: var(--font-modak);
-  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-width: 4px;
   -webkit-text-stroke-color: green;
   color: ; /* Membuat warna isian teks menjadi transparan */
 }

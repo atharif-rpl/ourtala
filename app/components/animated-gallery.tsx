@@ -4,11 +4,11 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 
 const galleryImages = [
-  "/placeholder.svg?height=500&width=800",
-  "/placeholder.svg?height=500&width=800",
-  "/placeholder.svg?height=500&width=800",
-  "/placeholder.svg?height=500&width=800",
-  "/placeholder.svg?height=500&width=800",
+  "/images/Galery1.jpg",
+  "/images/Galery2.jpg",
+  "/images/Galery3.jpg",
+  "/images/Galery4.jpg",
+  "/images/Galery1.jpg",
 ]
 
 export default function AnimatedGallery() {

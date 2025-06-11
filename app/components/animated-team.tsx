@@ -3,16 +3,22 @@
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 
-// Assuming this is the structure of your team members
+// Interface dan data tim
 interface TeamMember {
   id: number
   name: string
   role: string
   image: string
   bio: string
+  specialty: string
+  experience: string
+  social: { // Pastikan interface ini ada
+    linkedin?: string
+    twitter?: string
+    instagram?: string
+  }
 }
 
-// Sample team members (replace with your actual data)
 const teamMembers: TeamMember[] = [
   {
     id: 1,
@@ -20,6 +26,12 @@ const teamMembers: TeamMember[] = [
     role: "Founder & Plant Expert",
     image: "/placeholder.svg?height=300&width=300",
     bio: "Plant enthusiast with 10+ years of experience in urban gardening.",
+    specialty: "Urban Gardening",
+    experience: "10+ Years",
+    social: {
+      linkedin: "#",
+      twitter: "#",
+    },
   },
   {
     id: 2,
@@ -27,6 +39,12 @@ const teamMembers: TeamMember[] = [
     role: "Garden Designer",
     image: "/placeholder.svg?height=300&width=300",
     bio: "Specializes in small space garden design and vertical gardens.",
+    specialty: "Vertical Gardens",
+    experience: "8+ Years",
+    social: {
+      twitter: "#",
+      instagram: "#",
+    },
   },
   {
     id: 3,
@@ -34,6 +52,11 @@ const teamMembers: TeamMember[] = [
     role: "Sustainability Lead",
     image: "/placeholder.svg?height=300&width=300",
     bio: "Passionate about eco-friendly gardening practices and education.",
+    specialty: "Eco-Friendly Practices",
+    experience: "12+ Years",
+    social: {
+      linkedin: "#",
+    },
   },
   {
     id: 4,
@@ -41,86 +64,151 @@ const teamMembers: TeamMember[] = [
     role: "Customer Experience",
     image: "/placeholder.svg?height=300&width=300",
     bio: "Ensures every customer finds their perfect plant companions.",
+    specialty: "Customer Relations",
+    experience: "6+ Years",
+    social: {
+      linkedin: "#",
+      instagram: "#",
+      twitter: "#",
+    },
   },
 ]
 
-function TeamCard({ member }: { member: TeamMember }) {
+// Komponen Kartu Tim yang Disederhanakan
+function TeamCard({ member, index }: { member: TeamMember; index: number }) {
   const [isHovered, setIsHovered] = useState(false)
-  const [randomDelay] = useState(() => Math.random() * 2)
-  const [randomDuration] = useState(() => 3 + Math.random() * 2)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [time, setTime] = useState(0)
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const animationFrame = () => {
+      setTime(Date.now() * 0.001)
+      requestAnimationFrame(animationFrame)
+    }
+    requestAnimationFrame(animationFrame)
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (cardRef.current) {
+        const rect = cardRef.current.getBoundingClientRect()
+        setMousePosition({
+          x: ((e.clientX - rect.left) / rect.width) * 100,
+          y: ((e.clientY - rect.top) / rect.height) * 100,
+        })
+      }
+    }
+
+    const card = cardRef.current
+    card?.addEventListener("mousemove", handleMouseMove)
+    return () => card?.removeEventListener("mousemove", handleMouseMove)
+  }, [])
 
   return (
-    <div className="relative group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-      {/* Simplified background elements - reduced blur and animations */}
+    <div
+      ref={cardRef}
+      className="relative group"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        transform: `translateY(${Math.sin(time * 2 + index) * 4}px)`,
+      }}
+    >
       <div
-        className="absolute -inset-1 bg-gradient-to-r from-green-400 via-green-300 to-yellow-300 rounded-2xl opacity-70 blur-sm group-hover:opacity-100 transition duration-500"
-        style={{ animationDelay: `${randomDelay}s` }}
+        className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-60 blur transition-all duration-500"
+        style={{
+          background: `
+            radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
+              rgba(34, 197, 94, 0.5) 0%, 
+              rgba(251, 191, 36, 0.3) 40%, 
+              transparent 70%
+            )
+          `,
+        }}
       ></div>
-
-      <div className="relative bg-white rounded-2xl overflow-hidden shadow-xl transition-all duration-300 z-10 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1">
+      <div
+        className="relative bg-white rounded-2xl overflow-hidden shadow-xl transition-all duration-300 z-10"
+        style={{
+          transform: `
+            scale(${isHovered ? 1.05 : 1}) 
+            rotateX(${isHovered ? (mousePosition.y - 50) * 0.15 : 0}deg) 
+            rotateY(${isHovered ? (mousePosition.x - 50) * -0.15 : 0}deg)
+          `,
+          transformStyle: "preserve-3d",
+        }}
+      >
         <div className="relative h-64 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30 z-10"></div>
           <Image
             src={member.image || "/placeholder.svg"}
             alt={member.name}
             width={300}
             height={300}
-            className={`w-full h-full object-cover transition-all duration-500 ${isHovered ? "scale-110" : "scale-100"}`}
+            className="w-full h-full object-cover transition-transform duration-500"
+            style={{
+              transform: `scale(${isHovered ? 1.2 : 1.1})`,
+            }}
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div
+            className="absolute top-4 right-4 z-20 transition-all duration-300"
+            style={{
+              transform: `scale(${isHovered ? 1.1 : 1})`,
+            }}
+          >
+            <span className="bg-white/90 backdrop-blur-sm text-green-700 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              {member.specialty}
+            </span>
+          </div>
+          <div
+            className="absolute bottom-4 left-4 z-20 transition-all duration-300"
+            style={{
+              transform: `translateY(${isHovered ? 0 : 20}px)`,
+              opacity: isHovered ? 1 : 0,
+            }}
+          >
+            <span className="bg-yellow-400/90 backdrop-blur-sm text-gray-800 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              {member.experience}
+            </span>
+          </div>
         </div>
-
         <div className="p-6 relative">
-          {/* Name with animated underline */}
-          <h3 className="text-xl font-bold text-gray-800 mb-1 group-hover:text-green-600 transition-colors duration-300">
+          <h3 className="text-xl font-bold text-gray-800 mb-1 transition-colors duration-300 group-hover:text-green-600">
             {member.name}
-            <span className="block h-0.5 w-0 group-hover:w-full bg-green-500 transition-all duration-500 mt-0.5"></span>
           </h3>
+          <p className="text-sm font-medium text-green-700 mb-3">{member.role}</p>
+          <p className="text-gray-600 text-sm mb-4 h-12">{member.bio}</p>
 
-          {/* Role with simplified animation */}
-          <div className="inline-block relative mb-3">
-            <span className="relative z-10 text-sm font-medium text-green-700 bg-green-50 px-3 py-1 rounded-full">
-              {member.role}
-            </span>
+          {/* ===== BAGIAN IKON SOSIAL YANG DIPERBAIKI ===== */}
+          <div
+            className="flex space-x-2 transition-opacity duration-300"
+            style={{
+              opacity: isHovered ? 1 : 0,
+            }}
+          >
+            {member.social.linkedin && (
+              <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-700 transition-all">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z"></path></svg>
+              </a>
+            )}
+            {member.social.twitter && (
+              <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-700 transition-all">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84"></path></svg>
+              </a>
+            )}
+            {member.social.instagram && (
+              <a href={member.social.instagram} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-700 transition-all">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2.163c2.67 0 2.987.01 4.042.059 2.71.123 3.976 1.409 4.099 4.099.048 1.054.057 1.37.057 4.042 0 2.672-.01 2.988-.057 4.042-.123 2.69-1.387 3.975-4.1 4.099-1.054.048-1.37.058-4.041.058-2.67 0-2.987-.01-4.04-.058-2.717-.124-3.977-1.416-4.1-4.1-.048-1.054-.058-1.37-.058-4.041 0-2.67.01-2.986.058-4.04.124-2.69 1.387-3.977 4.1-4.1 1.054-.048 1.37-.058 4.04-.058zM10 0C7.284 0 6.944.012 5.877.06 2.246.227.227 2.242.061 5.877.01 6.944 0 7.284 0 10s.012 3.057.06 4.123c.167 3.632 2.182 5.65 5.817 5.817 1.067.048 1.407.06 4.123.06s3.057-.012 4.123-.06c3.629-.167 5.652-2.182 5.816-5.817.05-1.066.061-1.407.061-4.123s-.012-3.056-.06-4.122C19.777 2.249 17.76.228 14.124.06 13.057.01 12.716 0 10 0zm0 4.865a5.135 5.135 0 100 10.27 5.135 5.135 0 000-10.27zm0 8.468a3.333 3.333 0 110-6.666 3.333 3.333 0 010 6.666zm5.338-9.87a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z"></path></svg>
+              </a>
+            )}
           </div>
 
-          {/* Bio with animated reveal */}
-          <p className="text-gray-600 relative overflow-hidden">
-            <span
-              className={`transition-transform duration-300 block ${isHovered ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
-            >
-              {member.bio}
-            </span>
-          </p>
-
-          {/* Social icons with simplified animation */}
-          <div className="mt-4 flex space-x-3">
-            {[1, 2, 3].map((_, i) => (
-              <button
-                key={i}
-                className={`w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-green-100 hover:text-green-600 transition-all duration-300 transform ${isHovered ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
-                style={{ transitionDelay: `${0.1 + i * 0.1}s` }}
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d={
-                      i === 0
-                        ? "M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"
-                        : i === 1
-                          ? "M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z"
-                          : "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                    }
-                  ></path>
-                </svg>
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export default function AnimatedTeamSection() {
+// Komponen Section Wrapper
+export default function SimplifiedTeamSection() {
   const [isInView, setIsInView] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
 
@@ -128,142 +216,41 @@ export default function AnimatedTeamSection() {
     const handleScroll = () => {
       if (sectionRef.current) {
         const rect = sectionRef.current.getBoundingClientRect()
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0
-        setIsInView(isVisible)
+        setIsInView(rect.top < window.innerHeight && rect.bottom > 0)
       }
     }
-
     window.addEventListener("scroll", handleScroll)
-    handleScroll() // Initial check
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
+    handleScroll()
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
-    <section id="team" ref={sectionRef} className="py-20 bg-white relative overflow-hidden">
-      {/* Simplified background elements - reduced number and complexity */}
-      <div className="absolute top-10 right-10 w-20 h-20 bg-green-200/30 rounded-full blur-xl"></div>
-      <div className="absolute bottom-20 left-20 w-32 h-32 bg-yellow-200/20 rounded-full blur-2xl"></div>
-      <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-green-300/20 rounded-full blur-lg"></div>
-      <div className="absolute top-20 left-1/3 w-12 h-12 bg-yellow-300/30 rounded-full blur-md"></div>
-
+    <section id="team" ref={sectionRef} className="py-20 bg-gray-50 relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-20">
-          <div className="inline-block mb-4 relative">
-            <span className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium tracking-wide uppercase relative z-10">
-              Our Team
-            </span>
-            <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-yellow-300 rounded-full opacity-30 blur"></div>
-          </div>
-
-          <h2 className="text-4xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
-            Meet Our <span className="text-green-600">Green</span> Team
-            <span className="text-3xl md:text-5xl align-top">*</span>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+            Meet Our Green Team
           </h2>
-
-          {/* Simplified underline */}
-          <span className="block h-1 w-24 mx-auto bg-gradient-to-r from-green-400 to-yellow-300 mt-2"></span>
-
-          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed mt-6">
-            Passionate plant lovers dedicated to bringing nature into your home
-            <span className="block mt-2 text-lg text-gray-500">
-              United by our love for gardening and sustainable living
-            </span>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Passionate plant lovers dedicated to bringing nature into your home.
           </p>
         </div>
-
-        {/* Team grid with simplified animations */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          {teamMembers.map((member) => (
-            <div key={member.id} className="opacity-0 animate-fade-in">
-              <TeamCard member={member} />
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+          {teamMembers.map((member, index) => (
+            <div
+              key={member.id}
+              className="transition-all duration-1000"
+              style={{
+                opacity: isInView ? 1 : 0,
+                transform: isInView ? "translateY(0)" : "translateY(50px)",
+                transitionDelay: `${index * 0.15}s`,
+              }}
+            >
+              <TeamCard member={member} index={index} />
             </div>
           ))}
         </div>
-
-        {/* Team stats section with simplified animations */}
-        <div
-          className="bg-gradient-to-br from-green-50 to-white rounded-3xl p-10 shadow-lg border border-green-100 relative overflow-hidden transform transition-all duration-700"
-          style={{
-            opacity: isInView ? 1 : 0,
-            transform: isInView ? "translateY(0)" : "translateY(50px)",
-          }}
-        >
-          {/* Simplified background decorative pattern */}
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-green-200/20 to-transparent rounded-full -mr-20 -mt-20"></div>
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-yellow-200/20 to-transparent rounded-full -ml-16 -mb-16"></div>
-
-          <div className="relative z-10">
-            <div className="text-center mb-12">
-              <h3 className="text-3xl font-bold text-gray-800 mb-4">
-                Why Our Team Rocks
-                <span className="block h-0.5 w-24 mx-auto bg-green-400 mt-2"></span>
-              </h3>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Combined experience and passion that makes the difference in everything we do
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { value: "15+", label: "Years Experience" },
-                { value: "500+", label: "Gardens Created" },
-                { value: "24/7", label: "Support Available" },
-                { value: "100%", label: "Satisfaction Rate" },
-              ].map((stat, index) => (
-                <div key={index} className="text-center group">
-                  <div
-                    className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-green-100 hover:shadow-lg transition-all duration-300 hover:border-green-200 relative overflow-hidden"
-                    style={{
-                      opacity: isInView ? 1 : 0,
-                      transform: isInView ? "translateY(0)" : "translateY(20px)",
-                      transition: `transform 0.5s ease-out ${0.2 + index * 0.1}s, opacity 0.5s ease-out ${0.2 + index * 0.1}s`,
-                    }}
-                  >
-                    <div className="text-4xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform duration-300">
-                      {stat.value}
-                    </div>
-                    <div className="text-sm font-medium text-gray-600 uppercase tracking-wide group-hover:text-green-700 transition-colors duration-300">
-                      {stat.label}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Call to action with simplified animations */}
-            <div className="text-center mt-12 pt-8 border-t border-green-100">
-              <p className="text-lg text-gray-600 mb-6">Want to join our growing team of garden enthusiasts?</p>
-              <button className="relative bg-gray-800 text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg group overflow-hidden">
-                {/* Button background animation - simplified */}
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-green-600 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-
-                {/* Button text */}
-                <span className="relative z-10">Join Our Team</span>
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fade-in {
-          0% { opacity: 0; transform: translateY(20px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fade-in {
-          animation: fade-in 0.8s ease-out forwards;
-          animation-delay: calc(var(--index, 0) * 0.1s);
-        }
-        
-        .grid > div:nth-child(1) { --index: 1; }
-        .grid > div:nth-child(2) { --index: 2; }
-        .grid > div:nth-child(3) { --index: 3; }
-        .grid > div:nth-child(4) { --index: 4; }
-      `}</style>
     </section>
   )
 }
