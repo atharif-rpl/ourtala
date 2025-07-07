@@ -17,7 +17,7 @@
   font-family: var(--font-modak);
   -webkit-text-stroke-width: 4px;
   -webkit-text-stroke-color: green;
-  color: ; /* Membuat warna isian teks menjadi transparan */
+  color:white; /* Membuat warna isian teks menjadi transparan */
 }
 
 @media (prefers-color-scheme: dark) {

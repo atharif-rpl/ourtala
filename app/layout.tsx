@@ -23,8 +23,8 @@ const modak = Modak({
 });
 
 export const metadata: Metadata = {
-  title: "Ourtula",
-  description: "Ourtula official web",
+  title: "Ourtala",
+  description: "Ourtala official web",
 };
 
 export default function RootLayout({

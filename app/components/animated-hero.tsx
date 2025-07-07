@@ -1,13 +1,113 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 export default function AnimatedHero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [time, setTime] = useState(0)
   const [scrollY, setScrollY] = useState(0)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [time, setTime] = useState(0)
+  const heroRef = useRef<HTMLElement>(null)
+
+  // Photo slots - GANTI URL SESUAI KEBUTUHAN ANDA
+  const photoSlots = [
+    {
+      id: 1,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "large",
+      bloomDirection: { angle: 15, distance: 350, curve: 0.3, rotation: 45 },
+    },
+    {
+      id: 2,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "medium",
+      bloomDirection: { angle: 45, distance: 280, curve: -0.2, rotation: -30 },
+    },
+    {
+      id: 3,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "large",
+      bloomDirection: { angle: 75, distance: 320, curve: 0.4, rotation: 120 },
+    },
+    {
+      id: 4,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "small",
+      bloomDirection: { angle: 105, distance: 250, curve: -0.1, rotation: -75 },
+    },
+    {
+      id: 5,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "medium",
+      bloomDirection: { angle: 135, distance: 300, curve: 0.25, rotation: 90 },
+    },
+    {
+      id: 6,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "large",
+      bloomDirection: { angle: 165, distance: 380, curve: -0.3, rotation: -45 },
+    },
+    {
+      id: 7,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "medium",
+      bloomDirection: { angle: 195, distance: 290, curve: 0.35, rotation: 160 },
+    },
+    {
+      id: 8,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "small",
+      bloomDirection: { angle: 225, distance: 260, curve: -0.15, rotation: 30 },
+    },
+    {
+      id: 9,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "large",
+      bloomDirection: { angle: 255, distance: 340, curve: 0.2, rotation: -90 },
+    },
+    {
+      id: 10,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "medium",
+      bloomDirection: { angle: 285, distance: 270, curve: -0.25, rotation: 135 },
+    },
+    {
+      id: 11,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "small",
+      bloomDirection: { angle: 315, distance: 310, curve: 0.4, rotation: -120 },
+    },
+    {
+      id: 12,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "medium",
+      bloomDirection: { angle: 345, distance: 290, curve: -0.1, rotation: 75 },
+    },
+    {
+      id: 13,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "large",
+      bloomDirection: { angle: 30, distance: 360, curve: 0.3, rotation: -60 },
+    },
+    {
+      id: 14,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "small",
+      bloomDirection: { angle: 120, distance: 240, curve: -0.2, rotation: 105 },
+    },
+    {
+      id: 15,
+      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      size: "medium",
+      bloomDirection: { angle: 210, distance: 320, curve: 0.35, rotation: -15 },
+    },
+  ]
 
   useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY)
+    }
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
@@ -15,584 +115,307 @@ export default function AnimatedHero() {
       })
     }
 
-    const handleScroll = () => {
-      setScrollY(window.scrollY)
-    }
-
     const animationFrame = () => {
       setTime(Date.now() * 0.001)
       requestAnimationFrame(animationFrame)
     }
 
-    window.addEventListener("mousemove", handleMouseMove)
+    setTimeout(() => setIsLoaded(true), 500)
+
     window.addEventListener("scroll", handleScroll)
+    window.addEventListener("mousemove", handleMouseMove)
     requestAnimationFrame(animationFrame)
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
       window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("mousemove", handleMouseMove)
     }
   }, [])
 
+  // Calculate bloom effect based on scroll - SMOOTH VERSION
+  const scatterProgress = Math.min(scrollY / 300, 1)
+  const easeOutQuart = 1 - Math.pow(1 - scatterProgress, 4)
+  const bloomEasing =
+    scatterProgress < 0.5
+      ? 4 * scatterProgress * scatterProgress * scatterProgress
+      : 1 - Math.pow(-2 * scatterProgress + 2, 3) / 2
+
+  // Get size value
+  const getSizeValue = (size: string) => {
+    switch (size) {
+      case "small":
+        return 80
+      case "medium":
+        return 120
+      case "large":
+        return 160
+      default:
+        return 100
+    }
+  }
+
   return (
-    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Enhanced animated background with multiple layers */}
-      <div
-        className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), 
-            radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(34, 197, 94, 0.3) 0%, transparent 50%),
-            linear-gradient(${time * 20}deg, rgba(34, 197, 94, 0.1) 0%, rgba(251, 191, 36, 0.1) 50%, rgba(34, 197, 94, 0.1) 100%),
-            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500"><rect fill="%234ade80" width="1000" height="500"/><circle fill="%2365a30d" cx="100" cy="100" r="20"/><circle fill="%2365a30d" cx="300" cy="150" r="15"/><circle fill="%2365a30d" cx="500" cy="80" r="25"/><circle fill="%2365a30d" cx="700" cy="200" r="18"/><circle fill="%2365a30d" cx="900" cy="120" r="22"/></svg>')
-          `,
-          transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px) scale(1.05)`,
-        }}
-      ></div>
-
-      {/* Floating garden ornaments - Enhanced */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Large decorative leaves */}
-        <div
-          className="absolute w-16 h-16 opacity-40"
-          style={{
-            top: "10%",
-            left: "8%",
-            transform: `rotate(${time * 30 + 45}deg) scale(${1 + Math.sin(time * 2) * 0.2})`,
-          }}
-        >
-          <svg viewBox="0 0 100 100" className="w-full h-full fill-green-300">
-            <path d="M50 10 C30 20, 20 40, 30 60 C40 80, 60 80, 70 60 C80 40, 70 20, 50 10 Z" />
-          </svg>
-        </div>
-
-        <div
-          className="absolute w-20 h-20 opacity-35"
-          style={{
-            top: "15%",
-            right: "12%",
-            transform: `rotate(${-time * 25 + 120}deg) scale(${1 + Math.cos(time * 1.8) * 0.3})`,
-          }}
-        >
-          <svg viewBox="0 0 100 100" className="w-full h-full fill-green-400">
-            <path d="M50 5 C25 15, 15 35, 25 55 C35 75, 65 75, 75 55 C85 35, 75 15, 50 5 Z" />
-          </svg>
-        </div>
-
-        {/* Decorative flowers */}
-        <div
-          className="absolute w-12 h-12 opacity-50"
-          style={{
-            top: "25%",
-            left: "15%",
-            transform: `rotate(${time * 40}deg) scale(${1 + Math.sin(time * 3) * 0.15})`,
-          }}
-        >
-          <svg viewBox="0 0 100 100" className="w-full h-full">
-            <circle cx="50" cy="30" r="8" fill="#fbbf24" />
-            <circle cx="70" cy="50" r="8" fill="#fbbf24" />
-            <circle cx="50" cy="70" r="8" fill="#fbbf24" />
-            <circle cx="30" cy="50" r="8" fill="#fbbf24" />
-            <circle cx="50" cy="50" r="6" fill="#f59e0b" />
-          </svg>
-        </div>
-
-        <div
-          className="absolute w-14 h-14 opacity-45"
-          style={{
-            top: "20%",
-            right: "20%",
-            transform: `rotate(${-time * 35}deg) scale(${1 + Math.cos(time * 2.5) * 0.2})`,
-          }}
-        >
-          <svg viewBox="0 0 100 100" className="w-full h-full">
-            <circle cx="50" cy="25" r="10" fill="#22c55e" />
-            <circle cx="75" cy="50" r="10" fill="#22c55e" />
-            <circle cx="50" cy="75" r="10" fill="#22c55e" />
-            <circle cx="25" cy="50" r="10" fill="#22c55e" />
-            <circle cx="50" cy="50" r="8" fill="#16a34a" />
-          </svg>
-        </div>
-
-        {/* Vine decorations */}
-        <div
-          className="absolute w-32 h-8 opacity-30"
-          style={{
-            top: "35%",
-            left: "5%",
-            transform: `rotate(${time * 15}deg) scaleX(${1 + Math.sin(time * 2) * 0.3})`,
-          }}
-        >
-          <svg viewBox="0 0 200 50" className="w-full h-full fill-green-300">
-            <path
-              d="M10 25 Q50 10, 90 25 Q130 40, 170 25 Q190 15, 190 25"
-              stroke="#22c55e"
-              strokeWidth="3"
-              fill="none"
-            />
-            <circle cx="30" cy="20" r="3" fill="#22c55e" />
-            <circle cx="70" cy="30" r="3" fill="#22c55e" />
-            <circle cx="110" cy="20" r="3" fill="#22c55e" />
-            <circle cx="150" cy="30" r="3" fill="#22c55e" />
-          </svg>
-        </div>
-
-        <div
-          className="absolute w-28 h-8 opacity-35"
-          style={{
-            bottom: "30%",
-            right: "8%",
-            transform: `rotate(${-time * 18}deg) scaleX(${1 + Math.cos(time * 1.5) * 0.25})`,
-          }}
-        >
-          <svg viewBox="0 0 200 50" className="w-full h-full fill-green-400">
-            <path
-              d="M10 25 Q50 40, 90 25 Q130 10, 170 25 Q190 35, 190 25"
-              stroke="#16a34a"
-              strokeWidth="3"
-              fill="none"
-            />
-            <circle cx="40" cy="35" r="3" fill="#16a34a" />
-            <circle cx="80" cy="15" r="3" fill="#16a34a" />
-            <circle cx="120" cy="35" r="3" fill="#16a34a" />
-            <circle cx="160" cy="15" r="3" fill="#16a34a" />
-          </svg>
-        </div>
-
-        {/* Enhanced floating dots with plant-like patterns */}
-        {Array.from({ length: 15 }, (_, i) => (
+    <>
+      <section
+        ref={heroRef}
+        id="home"
+        className="relative min-h-screen bg-gradient-to-br from-amber-50 to-white overflow-hidden"
+      >
+        {/* Main Content Area */}
+        <div className="relative pt-0 min-h-screen flex items-center justify-center">
+          {/* Background subtle pattern */}
           <div
-            key={i}
-            className="absolute rounded-full"
+            className="absolute inset-0 opacity-5"
             style={{
-              width: `${8 + (i % 3) * 4}px`,
-              height: `${8 + (i % 3) * 4}px`,
-              top: `${15 + ((i * 7) % 70)}%`,
-              left: `${10 + ((i * 11) % 80)}%`,
-              background: i % 3 === 0 ? "#22c55e" : i % 3 === 1 ? "#fbbf24" : "#16a34a",
-              opacity: 0.4 + (i % 3) * 0.1,
-              transform: `
-                translate(${Math.sin(time * (1 + i * 0.1)) * 20}px, ${Math.cos(time * (1.2 + i * 0.1)) * 15}px) 
-                scale(${1 + Math.sin(time * (2 + i * 0.2)) * 0.3})
-              `,
-              boxShadow: `0 0 ${10 + (i % 3) * 5}px rgba(34, 197, 94, 0.3)`,
+              backgroundImage: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, #10B981 0%, transparent 50%)`,
             }}
           />
-        ))}
 
-        {/* Butterfly ornaments */}
-        <div
-          className="absolute w-8 h-6 opacity-60"
-          style={{
-            top: "40%",
-            left: "25%",
-            transform: `
-              translate(${Math.sin(time * 2) * 30}px, ${Math.cos(time * 1.5) * 20}px) 
-              rotate(${Math.sin(time * 3) * 15}deg)
-            `,
-          }}
-        >
-          <svg viewBox="0 0 100 60" className="w-full h-full">
-            <ellipse cx="25" cy="20" rx="15" ry="10" fill="#fbbf24" opacity="0.8" />
-            <ellipse cx="75" cy="20" rx="15" ry="10" fill="#fbbf24" opacity="0.8" />
-            <ellipse cx="25" cy="40" rx="12" ry="8" fill="#f59e0b" opacity="0.8" />
-            <ellipse cx="75" cy="40" rx="12" ry="8" fill="#f59e0b" opacity="0.8" />
-            <line x1="50" y1="10" x2="50" y2="50" stroke="#92400e" strokeWidth="2" />
-          </svg>
-        </div>
+          {/* Photo Slots - BLOOM EFFECT dengan Karakter Bunga */}
+          <div className="relative w-full max-w-6xl mx-auto px-6">
+            {photoSlots.map((slot, index) => {
+              const size = getSizeValue(slot.size)
+              const angle = index * (360 / photoSlots.length) * (Math.PI / 180)
+              const baseRadius = 180
 
-        <div
-          className="absolute w-6 h-5 opacity-50"
-          style={{
-            top: "60%",
-            right: "30%",
-            transform: `
-              translate(${Math.cos(time * 1.8) * 25}px, ${Math.sin(time * 2.2) * 18}px) 
-              rotate(${Math.cos(time * 2.5) * 20}deg)
-            `,
-          }}
-        >
-          <svg viewBox="0 0 100 60" className="w-full h-full">
-            <ellipse cx="25" cy="20" rx="12" ry="8" fill="#22c55e" opacity="0.8" />
-            <ellipse cx="75" cy="20" rx="12" ry="8" fill="#22c55e" opacity="0.8" />
-            <ellipse cx="25" cy="40" rx="10" ry="6" fill="#16a34a" opacity="0.8" />
-            <ellipse cx="75" cy="40" rx="10" ry="6" fill="#16a34a" opacity="0.8" />
-            <line x1="50" y1="10" x2="50" y2="50" stroke="#166534" strokeWidth="2" />
-          </svg>
-        </div>
+              // Initial position (tight circle around logo)
+              const initialX = Math.cos(angle) * baseRadius
+              const initialY = Math.sin(angle) * baseRadius
 
-        {/* Seed/pollen particles */}
-        {Array.from({ length: 20 }, (_, i) => (
-          <div
-            key={`seed-${i}`}
-            className="absolute w-1 h-1 rounded-full"
-            style={{
-              top: `${20 + ((i * 3) % 60)}%`,
-              left: `${15 + ((i * 7) % 70)}%`,
-              background: i % 2 === 0 ? "#fbbf24" : "#22c55e",
-              opacity: 0.6,
-              transform: `
-                translate(${Math.sin(time * (2 + i * 0.3)) * 40}px, ${Math.cos(time * (1.8 + i * 0.2)) * 30}px) 
-                scale(${1 + Math.sin(time * (3 + i * 0.4)) * 0.5})
-              `,
-              boxShadow: `0 0 4px ${i % 2 === 0 ? "#fbbf24" : "#22c55e"}`,
-            }}
-          />
-        ))}
+              // BLOOM EFFECT - membuka seperti bunga dengan kurva abstrak
+              const bloomAngle = (slot.bloomDirection.angle * Math.PI) / 180
+              const bloomDistance = slot.bloomDirection.distance
+              const curve = slot.bloomDirection.curve
 
-        {/* Decorative grass elements */}
-        <div
-          className="absolute bottom-0 left-0 w-full h-20 opacity-20"
-          style={{
-            background: `
-              linear-gradient(to top, 
-                rgba(34, 197, 94, 0.3) 0%, 
-                transparent 100%
+              // Posisi bloom dengan kurva abstrak
+              const bloomX = Math.cos(bloomAngle) * bloomDistance * bloomEasing
+              const bloomY = Math.sin(bloomAngle) * bloomDistance * bloomEasing
+
+              // Tambahkan efek kurva untuk gerakan yang lebih organic
+              const curveOffset = curve * bloomEasing * 100
+              const curvedX = bloomX + Math.sin(bloomAngle + Math.PI / 2) * curveOffset
+              const curvedY = bloomY + Math.cos(bloomAngle + Math.PI / 2) * curveOffset
+
+              // Interpolasi smooth dari posisi awal ke posisi bloom
+              const currentX = initialX + (curvedX - initialX) * bloomEasing
+              const currentY = initialY + (curvedY - initialY) * bloomEasing
+
+              // Rotasi bloom dengan efek spiral
+              const baseRotation = Math.sin(time * 0.3 + index * 0.5) * 3
+              const bloomRotation = slot.bloomDirection.rotation * bloomEasing
+              const spiralRotation = bloomEasing * 180 * (index % 2 === 0 ? 1 : -1)
+              const totalRotation = baseRotation + bloomRotation + spiralRotation * 0.3
+
+              // Efek "breathing" saat bloom
+              const breathingScale = 1 + Math.sin(time * 2 + index * 0.8) * (bloomEasing * 0.1)
+
+              // Efek shimmer saat membuka
+              const shimmerOffset = Math.sin(time * 3 + index) * (bloomEasing * 5)
+
+              return (
+                <div
+                  key={slot.id}
+                  className={`absolute transition-all duration-1000 ease-out cursor-pointer group ${
+                    isLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                  style={{
+                    left: "50%",
+                    top: "50%",
+                    transform: `
+                      translate(-50%, -50%) 
+                      translate(${currentX + shimmerOffset}px, ${currentY}px) 
+                      rotate(${totalRotation}deg)
+                      scale(${breathingScale * (1 - bloomEasing * 0.1)})
+                    `,
+                    animationDelay: `${index * 0.04}s`,
+                    zIndex: 10 + index,
+                    willChange: "transform",
+                    filter: `blur(${bloomEasing * 0.2}px) brightness(${1 + bloomEasing * 0.1})`,
+                  }}
+                >
+                  {/* Character Container - Mendukung PNG dengan transparansi */}
+                  <div
+                    className="relative hover:scale-110 transition-all duration-300 group"
+                    style={{
+                      width: size,
+                      height: size,
+                    }}
+                  >
+                    {/* Character Image - Mendukung transparansi PNG */}
+                    <img
+                      src={slot.photoUrl || "/placeholder.svg"}
+                      alt={`Character ${slot.id}`}
+                      className="w-full h-full object-contain transition-all duration-500 group-hover:scale-110"
+                      style={{
+                        filter: `saturate(${1 + bloomEasing * 0.3}) contrast(${1 + bloomEasing * 0.2})`,
+                      }}
+                    />
+
+                    {/* Subtle glow effect untuk karakter */}
+                    <div
+                      className="absolute inset-0 bg-gradient-to-r from-red-400/10 to-yellow-400/10 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"
+                      style={{
+                        transform: "scale(1.5)",
+                      }}
+                    />
+
+                    {/* Character ID indicator (for development) */}
+                    <div className="absolute top-1 right-1 w-5 h-5 bg-red-500/80 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">{slot.id}</span>
+                    </div>
+                  </div>
+                </div>
               )
-            `,
-          }}
-        >
-          {Array.from({ length: 30 }, (_, i) => (
-            <div
-              key={`grass-${i}`}
-              className="absolute bottom-0"
-              style={{
-                left: `${i * 3.33}%`,
-                width: "2px",
-                height: `${15 + Math.sin(i) * 10}px`,
-                background: "#22c55e",
-                transform: `rotate(${Math.sin(time * 2 + i * 0.5) * 5}deg)`,
-                transformOrigin: "bottom",
-              }}
-            />
-          ))}
+            })}
+          </div>
+
+          {/* Central Logo - Smooth appearance */}
+          <div
+            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-out"
+            style={{
+              opacity: bloomEasing * 0.9,
+              transform: `translate(-50%, -50%) scale(${0.3 + bloomEasing * 0.7})`,
+              willChange: "transform, opacity",
+            }}
+          >
+            <div className="text-center">
+              <div
+                className="relative"
+                style={{
+                  transform: `rotate(${Math.sin(time * 0.2) * 3}deg)`,
+                }}
+              >
+                <img
+                  src="/logo.png"
+                  alt="OurTala Logo"
+                  className="w-24 h-24 md:w-32 md:h-32 mx-auto drop-shadow-2xl transition-all duration-500"
+                />
+
+                {/* Bloom center glow */}
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-yellow-400/20 rounded-full blur-xl"
+                  style={{
+                    transform: `scale(${1.2 + Math.sin(time * 0.4) * 0.1 + bloomEasing * 0.3})`,
+                    opacity: 0.3 + bloomEasing * 0.4,
+                  }}
+                />
+
+                {/* Radiating lines effect */}
+                {bloomEasing > 0.2 && (
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: `conic-gradient(from ${time * 20}deg, transparent 0%, #EF444420 10%, transparent 20%, #F59E0B20 30%, transparent 40%, #EF444415 50%, transparent 60%)`,
+                      transform: `scale(${3 + bloomEasing}) rotate(${time * 10}deg)`,
+                      opacity: bloomEasing * 0.6,
+                      borderRadius: "50%",
+                    }}
+                  />
+                )}
+              </div>
+
+              <h2
+                className="text-3xl md:text-5xl font-bold text-gray-800 mt-4 tracking-wider transition-all duration-700"
+                style={{
+                  transform: `translateY(${Math.sin(time * 0.3) * 2}px)`,
+                }}
+              >
+                OURTALA
+              </h2>
+              <p
+                className="text-lg md:text-xl text-gray-600 mt-2 font-light transition-all duration-700"
+                style={{
+                  transform: `translateY(${Math.sin(time * 0.25 + 1) * 1.5}px)`,
+                }}
+              >
+                Sustainable Innovation
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Floating petals */}
-        {Array.from({ length: 12 }, (_, i) => (
-          <div
-            key={`petal-${i}`}
-            className="absolute opacity-40"
-            style={{
-              top: `${10 + ((i * 8) % 80)}%`,
-              left: `${5 + ((i * 9) % 90)}%`,
-              transform: `
-                translate(${Math.sin(time * (1.5 + i * 0.2)) * 50}px, ${Math.cos(time * (1.2 + i * 0.15)) * 35}px) 
-                rotate(${time * (30 + i * 10)}deg)
-              `,
-            }}
-          >
-            <svg width="12" height="8" viewBox="0 0 12 8">
-              <ellipse
-                cx="6"
-                cy="4"
-                rx="6"
-                ry="4"
-                fill={i % 3 === 0 ? "#fbbf24" : i % 3 === 1 ? "#f472b6" : "#22c55e"}
+        {/* Smooth Scroll Indicator */}
+        <div
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 transition-all duration-700 ease-out"
+          style={{
+            opacity: Math.max(0, 1 - bloomEasing * 1.5),
+            transform: `translateX(-50%) translateY(${bloomEasing * 30}px) scale(${1 - bloomEasing * 0.3})`,
+          }}
+        >
+          <div className="flex flex-col items-center text-gray-600">
+            <div className="text-sm font-medium mb-2 animate-pulse-gentle">Scroll to see the magic bloom</div>
+            <div className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center animate-float-gentle">
+              <div
+                className="w-1 h-3 bg-gray-400 rounded-full mt-2"
+                style={{
+                  transform: `translateY(${Math.sin(time * 2) * 3}px)`,
+                }}
               />
-            </svg>
-          </div>
-        ))}
-      </div>
-
-      {/* Main content with enhanced animations */}
-      <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-        {/* Enhanced title with more ornamental effects */}
-        <h1 className="text-6xl md:text-[200px] font-bold mb-6 animate-title-entrance relative">
-          <div className="relative inline-block">
-            {/* Decorative elements around title */}
-            <div
-              className="absolute -top-8 -left-8 w-6 h-6 opacity-60"
-              style={{
-                transform: `rotate(${time * 60}deg) scale(${1 + Math.sin(time * 4) * 0.2})`,
-              }}
-            >
-              <svg viewBox="0 0 24 24" className="w-full h-full fill-yellow-300">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-              </svg>
             </div>
-
-            <div
-              className="absolute -top-6 -right-6 w-4 h-4 opacity-50"
-              style={{
-                transform: `rotate(${-time * 80}deg) scale(${1 + Math.cos(time * 3) * 0.3})`,
-              }}
-            >
-              <svg viewBox="0 0 24 24" className="w-full h-full fill-green-300">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-            </div>
-
-            <span className="inline-block animate-letter-bounce-1 w-[150px] mr-2"><img src="/images/ourtalah.png" alt="" /></span>
-            <span className="inline-block animate-letter-bounce-2 font-modak">u</span>
-            <span className="inline-block animate-letter-bounce-3 font-modak">r</span>
-            <span className="inline-block animate-letter-bounce-4 font-modak">t</span>
-            <span className="inline-block animate-letter-bounce-5 font-modak">a</span>
-            <span className="inline-block animate-letter-bounce-6 font-modak">l</span>
-            <span className="inline-block animate-letter-bounce-7 font-modak">a</span>
-            <span
-              className="text-5xl md:text-7xl align-top inline-block"
-              style={{
-                transform: `rotate(${time * 60}deg) scale(${1 + Math.sin(time * 4) * 0.2})`,
-                color: "#fbbf24",
-                textShadow: `0 0 20px rgba(251, 191, 36, 0.8)`,
-              }}
-            >
-              *
-            </span>
-
-            {/* Additional decorative elements */}
-            <div
-              className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-8 h-2 opacity-40"
-              style={{
-                background: `linear-gradient(${time * 90}deg, #22c55e, #fbbf24, #22c55e)`,
-                borderRadius: "4px",
-                transform: `translateX(-50%) scaleX(${1 + Math.sin(time * 3) * 0.3})`,
-              }}
-            />
           </div>
-        </h1>
+        </div>
 
-        {/* Enhanced subtitle with ornamental frame */}
-        <div className="relative mb-8">
+        {/* Progress Bar */}
+        <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
           <div
-            className="absolute -top-2 -left-4 w-3 h-3 opacity-50"
-            style={{
-              transform: `rotate(${time * 45}deg)`,
-            }}
-          >
-            <svg viewBox="0 0 12 12" className="w-full h-full fill-yellow-300">
-              <polygon points="6,0 8,4 12,4 9,7 10,12 6,9 2,12 3,7 0,4 4,4" />
-            </svg>
-          </div>
-
-          <div
-            className="absolute -top-2 -right-4 w-3 h-3 opacity-50"
-            style={{
-              transform: `rotate(${-time * 45}deg)`,
-            }}
-          >
-            <svg viewBox="0 0 12 12" className="w-full h-full fill-green-300">
-              <polygon points="6,0 8,4 12,4 9,7 10,12 6,9 2,12 3,7 0,4 4,4" />
-            </svg>
-          </div>
-
-          <p
-            className="text-xl md:text-2xl animate-subtitle-slide tracking-widest relative"
-            style={{
-              textShadow: `0 0 15px rgba(255, 255, 255, 0.5)`,
-            }}
-          >
-            gardens for everyone
-          </p>
-
-          <div
-            className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-0.5 opacity-60"
-            style={{
-              background: `linear-gradient(${time * 120}deg, #22c55e, #fbbf24, #22c55e)`,
-              boxShadow: `0 0 10px rgba(34, 197, 94, 0.5)`,
-            }}
+            className="h-full bg-gradient-to-r from-red-400 to-yellow-400 transition-all duration-300"
+            style={{ width: `${scatterProgress * 100}%` }}
           />
         </div>
+      </section>
 
-        <p
-          className="text-lg mb-12 opacity-90 animate-description-fade relative"
-          style={{
-            textShadow: `0 0 10px rgba(255, 255, 255, 0.3)`,
-          }}
-        >
-          no yard doesn&apos;t have to mean no garden! let your flowers Ourtala*
-        </p>
-
-        {/* Enhanced buttons with ornamental effects */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-buttons-rise">
-          <button
-            onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-            className="relative bg-white text-gray-800 px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-110 hover:rotate-2 group overflow-hidden"
-            style={{
-              boxShadow: `0 4px 20px rgba(255, 255, 255, 0.3)`,
-            }}
-          >
-            {/* Decorative elements on button */}
-            <div
-              className="absolute -top-1 -left-1 w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{
-                transform: `rotate(${time * 90}deg)`,
-              }}
-            >
-              <svg viewBox="0 0 8 8" className="w-full h-full fill-green-500">
-                <circle cx="4" cy="4" r="4" />
-              </svg>
-            </div>
-
-            <div
-              className="absolute -bottom-1 -right-1 w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{
-                transform: `rotate(${-time * 90}deg)`,
-              }}
-            >
-              <svg viewBox="0 0 8 8" className="w-full h-full fill-yellow-500">
-                <circle cx="4" cy="4" r="4" />
-              </svg>
-            </div>
-
-            <span className="relative z-10">learn more</span>
-          </button>
-
-          <button
-            onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-            className="relative bg-gray-800 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-110 hover:-rotate-2 group overflow-hidden"
-            style={{
-              boxShadow: `0 4px 20px rgba(0, 0, 0, 0.3)`,
-            }}
-          >
-            {/* Decorative elements on button */}
-            <div
-              className="absolute -top-1 -right-1 w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{
-                transform: `rotate(${time * 90}deg)`,
-              }}
-            >
-              <svg viewBox="0 0 8 8" className="w-full h-full fill-green-400">
-                <circle cx="4" cy="4" r="4" />
-              </svg>
-            </div>
-
-            <div
-              className="absolute -bottom-1 -left-1 w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{
-                transform: `rotate(${-time * 90}deg)`,
-              }}
-            >
-              <svg viewBox="0 0 8 8" className="w-full h-full fill-yellow-400">
-                <circle cx="4" cy="4" r="4" />
-              </svg>
-            </div>
-
-            <span className="relative z-10">shop now</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Enhanced scroll indicator with ornamental frame */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-scroll-indicator">
-        <div className="relative">
-          {/* Decorative frame around scroll indicator */}
-          <div
-            className="absolute -top-4 -left-4 w-3 h-3 opacity-40"
-            style={{
-              transform: `rotate(${time * 60}deg)`,
-            }}
-          >
-            <svg viewBox="0 0 12 12" className="w-full h-full fill-white">
-              <polygon points="6,0 8,4 12,4 9,7 10,12 6,9 2,12 3,7 0,4 4,4" />
-            </svg>
-          </div>
-
-          <div
-            className="absolute -top-4 -right-4 w-3 h-3 opacity-40"
-            style={{
-              transform: `rotate(${-time * 60}deg)`,
-            }}
-          >
-            <svg viewBox="0 0 12 12" className="w-full h-full fill-white">
-              <polygon points="6,0 8,4 12,4 9,7 10,12 6,9 2,12 3,7 0,4 4,4" />
-            </svg>
-          </div>
-
-          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center animate-border-pulse">
-            <div className="w-1 h-3 bg-white rounded-full mt-2 animate-scroll-dot"></div>
-          </div>
-        </div>
-      </div>
-
+      {/* Enhanced Custom Styles */}
       <style jsx>{`
-        @keyframes title-entrance {
-          0% { transform: translateY(50px) scale(0.8); opacity: 0; }
-          100% { transform: translateY(0px) scale(1); opacity: 1; }
+        @keyframes float-gentle {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-8px) rotate(1deg); }
         }
-        
-        @keyframes letter-bounce-1 {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
+
+        @keyframes pulse-gentle {
+          0%, 100% { transform: scale(1); opacity: 0.8; }
+          50% { transform: scale(1.05); opacity: 1; }
         }
-        
-        @keyframes letter-bounce-2 {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
+
+        .animate-float-gentle {
+          animation: float-gentle 8s ease-in-out infinite;
         }
-        
-        @keyframes letter-bounce-3 {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
+
+        .animate-pulse-gentle {
+          animation: pulse-gentle 4s ease-in-out infinite;
         }
-        
-        @keyframes letter-bounce-4 {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-12px); }
+
+        /* Smooth scrolling with momentum */
+        html {
+          scroll-behavior: smooth;
         }
-        
-        @keyframes letter-bounce-5 {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-18px); }
+
+        /* Hardware acceleration for smooth animations */
+        * {
+          -webkit-transform: translateZ(0);
+          -moz-transform: translateZ(0);
+          -ms-transform: translateZ(0);
+          -o-transform: translateZ(0);
+          transform: translateZ(0);
         }
-        
-        @keyframes letter-bounce-6 {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-6px); }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 6px;
         }
-        
-        @keyframes letter-bounce-7 {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-14px); }
+
+        ::-webkit-scrollbar-track {
+          background: rgba(0,0,0,0.1);
         }
-        
-        @keyframes subtitle-slide {
-          0% { transform: translateX(-100px); opacity: 0; }
-          100% { transform: translateX(0px); opacity: 1; }
+
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(180deg, #EF4444, #F59E0B);
+          border-radius: 3px;
         }
-        
-        @keyframes description-fade {
-          0% { transform: translateY(30px); opacity: 0; }
-          100% { transform: translateY(0px); opacity: 0.9; }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(180deg, #DC2626, #D97706);
         }
-        
-        @keyframes buttons-rise {
-          0% { transform: translateY(50px); opacity: 0; }
-          100% { transform: translateY(0px); opacity: 1; }
-        }
-        
-        @keyframes scroll-indicator {
-          0%, 100% { transform: translateX(-50%) translateY(0px); }
-          50% { transform: translateX(-50%) translateY(-10px); }
-        }
-        
-        @keyframes border-pulse {
-          0%, 100% { border-color: rgba(255,255,255,1); }
-          50% { border-color: rgba(255,255,255,0.5); }
-        }
-        
-        @keyframes scroll-dot {
-          0% { transform: translateY(0px); opacity: 1; }
-          50% { transform: translateY(15px); opacity: 0.3; }
-          100% { transform: translateY(0px); opacity: 1; }
-        }
-        
-        .animate-title-entrance { animation: title-entrance 1s ease-out 0.2s both; }
-        .animate-letter-bounce-1 { animation: letter-bounce-1 2s ease-in-out infinite 0.1s; }
-        .animate-letter-bounce-2 { animation: letter-bounce-2 2s ease-in-out infinite 0.2s; }
-        .animate-letter-bounce-3 { animation: letter-bounce-3 2s ease-in-out infinite 0.3s; }
-        .animate-letter-bounce-4 { animation: letter-bounce-4 2s ease-in-out infinite 0.4s; }
-        .animate-letter-bounce-5 { animation: letter-bounce-5 2s ease-in-out infinite 0.5s; }
-        .animate-letter-bounce-6 { animation: letter-bounce-6 2s ease-in-out infinite 0.6s; }
-        .animate-letter-bounce-7 { animation: letter-bounce-7 2s ease-in-out infinite 0.7s; }
-        .animate-subtitle-slide { animation: subtitle-slide 1s ease-out 0.8s both; }
-        .animate-description-fade { animation: description-fade 1s ease-out 1.2s both; }
-        .animate-buttons-rise { animation: buttons-rise 1s ease-out 1.6s both; }
-        .animate-scroll-indicator { animation: scroll-indicator 2s ease-in-out infinite; }
-        .animate-border-pulse { animation: border-pulse 2s ease-in-out infinite; }
-        .animate-scroll-dot { animation: scroll-dot 2s ease-in-out infinite; }
       `}</style>
-    </section>
+    </>
   )
 }

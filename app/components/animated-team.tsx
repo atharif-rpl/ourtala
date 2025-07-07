@@ -1,85 +1,127 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 
-// Interface dan data tim
 interface TeamMember {
   id: number
   name: string
   role: string
-  image: string
   bio: string
-  specialty: string
-  experience: string
-  social: { // Pastikan interface ini ada
+  image: string
+  social: {
     linkedin?: string
     twitter?: string
     instagram?: string
   }
 }
 
-const teamMembers: TeamMember[] = [
-  {
-    id: 1,
-    name: "Amanda N. Shelima",
-    role: "Head Director & founder Of Ourtala",
-    image: "/images/amanda.jpg",
-    bio: "Plant enthusiast with 10+ years of experience in urban gardening.",
-    specialty: "Founder",
-    experience: "10+ Years",
-    social: {
-    instagram: "#",
-    twitter: "#",
-    },
-  },
-  {
-    id: 2,
-    name: "Freya Visesa S.",
-    role: "Graphic Designer",
-    image: "/images/profile2.jpg",
-    bio: "Specializes in small space garden design and vertical gardens.",
-    specialty: "Graphic Designer",
-    experience: "8+ Years",
-    social: {
-    twitter: "#",
-    instagram: "#",
-    },
-  },
-  {
-    id: 3,
-    name: "Farras A. Arfian",
-    role: "Content Writer",
-    image: "/images/profile3.jpg",
-    bio: "Passionate about eco-friendly gardening practices and education.",
-    specialty: "Content Writer",
-    experience: "12+ Years",
-    social: {
-    linkedin: "#",
-    instagram: "#",
-    },
-  },
-  {
-    id: 4,
-    name: "Atharif Pratama Budiman",
-    role: "Web Developer",
-    image: "/images/profileatho.jpeg",
-    bio: "Ensures every customer finds their perfect plant companions.",
-    specialty: "Customer Relations",
-    experience: "6+ Years",
-    social: {
-    linkedin: "#",
-    instagram: "#",
-    },
-  },
-]
+function TeamCard({ member }: { member: TeamMember }) {
+  return (
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 group">
+      <div className="relative h-64 overflow-hidden">
+        <Image
+          src={member.image || "/placeholder.svg"}
+          alt={member.name}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
 
-// Komponen Kartu Tim yang Disederhanakan
-function TeamCard({ member, index }: { member: TeamMember; index: number }) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+        {/* Social Links */}
+        <div className="absolute bottom-4 left-4 right-4 flex justify-center space-x-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+          {member.social.linkedin && (
+            <a
+              href={member.social.linkedin}
+              className="bg-white/90 text-gray-800 p-2 rounded-full hover:bg-white transition-colors"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+            </a>
+          )}
+          {member.social.twitter && (
+            <a
+              href={member.social.twitter}
+              className="bg-white/90 text-gray-800 p-2 rounded-full hover:bg-white transition-colors"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+              </svg>
+            </a>
+          )}
+          {member.social.instagram && (
+            <a
+              href={member.social.instagram}
+              className="bg-white/90 text-gray-800 p-2 rounded-full hover:bg-white transition-colors"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+              </svg>
+            </a>
+          )}
+        </div>
+      </div>
+
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-800 mb-1">{member.name}</h3>
+        <p className="text-amber-600 font-medium mb-3">{member.role}</p>
+        <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
+      </div>
+    </div>
+  )
+}
+
+export default function AnimatedTeamSection() {
   const [time, setTime] = useState(0)
-  const cardRef = useRef<HTMLDivElement>(null)
+
+  const teamMembers: TeamMember[] = [
+    {
+      id: 1,
+      name: "Sarah Johnson",
+      role: "Founder & CEO",
+      bio: "Passionate environmentalist with 10+ years experience in sustainable agriculture and community development.",
+      image: "/placeholder.svg?height=300&width=300",
+      social: {
+        linkedin: "#",
+        twitter: "#",
+        instagram: "#",
+      },
+    },
+    {
+      id: 2,
+      name: "Michael Chen",
+      role: "Head of Operations",
+      bio: "Expert in urban farming and hydroponic systems, dedicated to making gardening accessible to everyone.",
+      image: "/placeholder.svg?height=300&width=300",
+      social: {
+        linkedin: "#",
+        instagram: "#",
+      },
+    },
+    {
+      id: 3,
+      name: "Emily Rodriguez",
+      role: "Community Manager",
+      bio: "Building bridges between communities and sustainable practices through education and engagement.",
+      image: "/placeholder.svg?height=300&width=300",
+      social: {
+        twitter: "#",
+        instagram: "#",
+      },
+    },
+    {
+      id: 4,
+      name: "David Kim",
+      role: "Technology Lead",
+      bio: "Developing innovative solutions to connect gardeners and optimize growing conditions through technology.",
+      image: "/placeholder.svg?height=300&width=300",
+      social: {
+        linkedin: "#",
+        twitter: "#",
+      },
+    },
+  ]
 
   useEffect(() => {
     const animationFrame = () => {
@@ -87,170 +129,85 @@ function TeamCard({ member, index }: { member: TeamMember; index: number }) {
       requestAnimationFrame(animationFrame)
     }
     requestAnimationFrame(animationFrame)
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (cardRef.current) {
-        const rect = cardRef.current.getBoundingClientRect()
-        setMousePosition({
-          x: ((e.clientX - rect.left) / rect.width) * 100,
-          y: ((e.clientY - rect.top) / rect.height) * 100,
-        })
-      }
-    }
-
-    const card = cardRef.current
-    card?.addEventListener("mousemove", handleMouseMove)
-    return () => card?.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
   return (
-    <div
-      ref={cardRef}
-      className="relative group"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        transform: `translateY(${Math.sin(time * 2 + index) * 4}px)`,
-      }}
-    >
-      <div
-        className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-60 blur transition-all duration-500"
-        style={{
-          background: `
-            radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
-              rgba(34, 197, 94, 0.5) 0%, 
-              rgba(251, 191, 36, 0.3) 40%, 
-              transparent 70%
-            )
-          `,
-        }}
-      ></div>
-      <div
-        className="relative bg-white rounded-2xl overflow-hidden shadow-xl transition-all duration-300 z-10"
-        style={{
-          transform: `
-            scale(${isHovered ? 1.05 : 1}) 
-            rotateX(${isHovered ? (mousePosition.y - 50) * 0.15 : 0}deg) 
-            rotateY(${isHovered ? (mousePosition.x - 50) * -0.15 : 0}deg)
-          `,
-          transformStyle: "preserve-3d",
-        }}
-      >
-        <div className="relative h-64 overflow-hidden">
-          <Image
-            src={member.image || "/placeholder.svg"}
-            alt={member.name}
-            width={300}
-            height={300}
-            className="w-full h-full object-cover transition-transform duration-500"
-            style={{
-              transform: `scale(${isHovered ? 1.2 : 1.1})`,
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-          <div
-            className="absolute top-4 right-4 z-20 transition-all duration-300"
-            style={{
-              transform: `scale(${isHovered ? 1.1 : 1})`,
-            }}
-          >
-            <span className="bg-white/90 backdrop-blur-sm text-green-700 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-              {member.specialty}
-            </span>
-          </div>
-          <div
-            className="absolute bottom-4 left-4 z-20 transition-all duration-300"
-            style={{
-              transform: `translateY(${isHovered ? 0 : 20}px)`,
-              opacity: isHovered ? 1 : 0,
-            }}
-          >
-            <span className="bg-yellow-400/90 backdrop-blur-sm text-gray-800 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-              {member.experience}
-            </span>
-          </div>
-        </div>
-        <div className="p-6 relative">
-          <h3 className="text-xl font-bold text-gray-800 mb-1 transition-colors duration-300 group-hover:text-green-600">
-            {member.name}
-          </h3>
-          <p className="text-sm font-medium text-green-700 mb-3">{member.role}</p>
-          <p className="text-gray-600 text-sm mb-4 h-12">{member.bio}</p>
+    <section id="team" className="py-20 bg-gradient-to-br from-amber-50 to-orange-50 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute top-20 left-10 w-20 h-20 bg-amber-200/20 rounded-full blur-xl"></div>
+      <div className="absolute bottom-10 right-20 w-32 h-32 bg-orange-200/15 rounded-full blur-2xl"></div>
+      <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-yellow-300/15 rounded-full blur-lg"></div>
 
-          {/* ===== BAGIAN IKON SOSIAL YANG DIPERBAIKI ===== */}
-          <div
-            className="flex space-x-2 transition-opacity duration-300"
-            style={{
-              opacity: isHovered ? 1 : 0,
-            }}
-          >
-            {member.social.linkedin && (
-              <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-700 transition-all">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z"></path></svg>
-              </a>
-            )}
-            {member.social.twitter && (
-              <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-700 transition-all">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84"></path></svg>
-              </a>
-            )}
-            {member.social.instagram && (
-              <a href={member.social.instagram} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-700 transition-all">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2.163c2.67 0 2.987.01 4.042.059 2.71.123 3.976 1.409 4.099 4.099.048 1.054.057 1.37.057 4.042 0 2.672-.01 2.988-.057 4.042-.123 2.69-1.387 3.975-4.1 4.099-1.054.048-1.37.058-4.041.058-2.67 0-2.987-.01-4.04-.058-2.717-.124-3.977-1.416-4.1-4.1-.048-1.054-.058-1.37-.058-4.041 0-2.67.01-2.986.058-4.04.124-2.69 1.387-3.977 4.1-4.1 1.054-.048 1.37-.058 4.04-.058zM10 0C7.284 0 6.944.012 5.877.06 2.246.227.227 2.242.061 5.877.01 6.944 0 7.284 0 10s.012 3.057.06 4.123c.167 3.632 2.182 5.65 5.817 5.817 1.067.048 1.407.06 4.123.06s3.057-.012 4.123-.06c3.629-.167 5.652-2.182 5.816-5.817.05-1.066.061-1.407.061-4.123s-.012-3.056-.06-4.122C19.777 2.249 17.76.228 14.124.06 13.057.01 12.716 0 10 0zm0 4.865a5.135 5.135 0 100 10.27 5.135 5.135 0 000-10.27zm0 8.468a3.333 3.333 0 110-6.666 3.333 3.333 0 010 6.666zm5.338-9.87a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z"></path></svg>
-              </a>
-            )}
-          </div>
-
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Komponen Section Wrapper
-export default function SimplifiedTeamSection() {
-  const [isInView, setIsInView] = useState(false)
-  const sectionRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (sectionRef.current) {
-        const rect = sectionRef.current.getBoundingClientRect()
-        setIsInView(rect.top < window.innerHeight && rect.bottom > 0)
-      }
-    }
-    window.addEventListener("scroll", handleScroll)
-    handleScroll()
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  return (
-    <section id="team" ref={sectionRef} className="py-20 bg-gray-50 relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
+        {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-            Meet Our Green Team
+          <div className="inline-block mb-4">
+            <span className="bg-white/80 backdrop-blur-sm text-amber-800 px-6 py-3 rounded-full text-sm font-medium tracking-wide uppercase border border-amber-200 shadow-sm">
+              Our Team
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+            Meet the
+            <span className="text-amber-600"> Changemakers</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Passionate plant lovers dedicated to bringing nature into your home.
+            Our diverse team of passionate individuals is dedicated to creating a more sustainable and green future for
+            communities worldwide.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+
+        {/* Team Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {teamMembers.map((member, index) => (
             <div
               key={member.id}
-              className="transition-all duration-1000"
+              className="opacity-0 animate-fade-in-up"
               style={{
-                opacity: isInView ? 1 : 0,
-                transform: isInView ? "translateY(0)" : "translateY(50px)",
-                transitionDelay: `${index * 0.15}s`,
+                animationDelay: `${index * 0.15}s`,
+                animationFillMode: "forwards",
               }}
             >
-              <TeamCard member={member} index={index} />
+              <TeamCard member={member} />
             </div>
           ))}
         </div>
+
+        {/* Join Team CTA */}
+        <div className="text-center">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-amber-100 shadow-sm">
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Want to Join Our Mission?</h3>
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+              We're always looking for passionate individuals who share our vision of creating sustainable communities.
+              Join us in making a difference!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="bg-amber-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-amber-700 transition-all duration-300 transform hover:scale-105">
+                View Open Positions
+              </button>
+              <button className="border border-amber-600 text-amber-600 px-8 py-3 rounded-full font-semibold hover:bg-amber-50 transition-all duration-300">
+                Contact Us
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.6s ease-out;
+        }
+      `}</style>
     </section>
   )
 }
