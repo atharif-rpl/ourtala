@@ -13,91 +13,91 @@ export default function AnimatedHero() {
   const photoSlots = [
     {
       id: 1,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotbunga.png", // Ganti dengan gambar Anda
       size: "large",
       bloomDirection: { angle: 15, distance: 350, curve: 0.3, rotation: 45 },
     },
     {
       id: 2,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotpot.png", // Ganti dengan gambar Anda
       size: "medium",
       bloomDirection: { angle: 45, distance: 280, curve: -0.2, rotation: -30 },
     },
     {
       id: 3,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotpohon.png", // Ganti dengan gambar Anda
       size: "large",
       bloomDirection: { angle: 75, distance: 320, curve: 0.4, rotation: 120 },
     },
     {
       id: 4,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotbunga.png", // Ganti dengan gambar Anda
       size: "small",
       bloomDirection: { angle: 105, distance: 250, curve: -0.1, rotation: -75 },
     },
     {
       id: 5,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotpot.png", // Ganti dengan gambar Anda
       size: "medium",
       bloomDirection: { angle: 135, distance: 300, curve: 0.25, rotation: 90 },
     },
     {
       id: 6,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotpohon.png", // Ganti dengan gambar Anda
       size: "large",
       bloomDirection: { angle: 165, distance: 380, curve: -0.3, rotation: -45 },
     },
     {
       id: 7,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotbunga.png", // Ganti dengan gambar Anda
       size: "medium",
       bloomDirection: { angle: 195, distance: 290, curve: 0.35, rotation: 160 },
     },
     {
       id: 8,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotpot.png", // Ganti dengan gambar Anda
       size: "small",
       bloomDirection: { angle: 225, distance: 260, curve: -0.15, rotation: 30 },
     },
     {
       id: 9,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotbunga.png", // Ganti dengan gambar Anda
       size: "large",
       bloomDirection: { angle: 255, distance: 340, curve: 0.2, rotation: -90 },
     },
     {
       id: 10,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotpot.png", // Ganti dengan gambar Anda
       size: "medium",
       bloomDirection: { angle: 285, distance: 270, curve: -0.25, rotation: 135 },
     },
     {
       id: 11,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotpohon.png", // Ganti dengan gambar Anda
       size: "small",
       bloomDirection: { angle: 315, distance: 310, curve: 0.4, rotation: -120 },
     },
     {
       id: 12,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotbunga.png", // Ganti dengan gambar Anda
       size: "medium",
       bloomDirection: { angle: 345, distance: 290, curve: -0.1, rotation: 75 },
     },
     {
       id: 13,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotpot.png", // Ganti dengan gambar Anda
       size: "large",
       bloomDirection: { angle: 30, distance: 360, curve: 0.3, rotation: -60 },
     },
     {
       id: 14,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotpohon.png", // Ganti dengan gambar Anda
       size: "small",
       bloomDirection: { angle: 120, distance: 240, curve: -0.2, rotation: 105 },
     },
     {
       id: 15,
-      photoUrl: "/flower-character.png", // Ganti dengan gambar Anda
+      photoUrl: "/images/mascotbunga.png", // Ganti dengan gambar Anda
       size: "medium",
       bloomDirection: { angle: 210, distance: 320, curve: 0.35, rotation: -15 },
     },
@@ -286,9 +286,9 @@ export default function AnimatedHero() {
                 }}
               >
                 <img
-                  src="/logo.png"
+                  src="/images/OURTALA.png"
                   alt="OurTala Logo"
-                  className="w-24 h-24 md:w-32 md:h-32 mx-auto drop-shadow-2xl transition-all duration-500"
+                  className="h-32 md:w-32 md:h-32 mx-auto drop-shadow-2xl transition-all duration-500"
                 />
 
                 {/* Bloom center glow */}

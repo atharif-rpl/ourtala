@@ -2,14 +2,13 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import AnimatedHero from "/components/animated-hero"
-import AnimatedGallery from "../components/animated-gallery"
-import AnimatedTeamSection from "../components/animated-team"
-import NavBar from "../components/navbar"
-import AnimatedSocialSection from "../components/animated-social"
-import AnimatedCharitySection from "../components/animated-charity"
-import AnimatedAbout from "../components/animated-about"
-
+import AnimatedHero from "./components/animated-hero"
+import AnimatedGallery from "./components/animated-gallery"
+import AnimatedTeamSection from "./components/animated-team"
+import NavBar from "./components/navbar"
+import AnimatedSocialSection from "./components/animated-social"
+import AnimatedCharitySection from "./components/animated-charty"
+import AnimatedAbout from "./components/animated-about"
 interface CharityProject {
   id: number
   title: string
