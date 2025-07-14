@@ -10,14 +10,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-modak: var(--font-modak);
-  
+  /* Baris yang salah telah dihapus dari sini */
 }
+
+/* Kelas ini sekarang akan berfungsi dengan benar setelah perbaikan di atas.
+  Saya juga menyesuaikan gayanya agar lebih menarik.
+*/
 .font-modak {
-  font-family: var(--font-modak);
-  -webkit-text-stroke-width: 4px;
-  -webkit-text-stroke-color: green;
-  color:white; /* Membuat warna isian teks menjadi transparan */
+  font-family: var(--font-modak), sans-serif; /* Menambahkan fallback font */
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #16a34a; /* Warna hijau yang lebih bagus */
+  color: white;
+  text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,5 +34,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans); /* Menggunakan font Geist Sans untuk body */
 }
