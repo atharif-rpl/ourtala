@@ -6,7 +6,8 @@ export default function AnimatedHero() {
   const [scrollY, setScrollY] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [time, setTime] = useState(0)
-  const heroRef = useRef<HTMLDivElement>(null) // Tambahkan useRef untuk hero section
+  const heroRef = useRef<HTMLDivElement>(null)
+  const [isHeroVisible, setIsHeroVisible] = useState(false) // State baru untuk animasi masuk Hero
 
   // Photo slots dengan jarak yang sudah disesuaikan
   const photoSlots = [
@@ -93,7 +94,16 @@ export default function AnimatedHero() {
     setTimeout(() => setIsLoaded(true), 500)
     window.addEventListener("scroll", handleScroll)
     requestAnimationFrame(animationFrame)
-    return () => window.removeEventListener("scroll", handleScroll)
+
+    // Set isHeroVisible to true after a short delay to trigger fade-in
+    const heroEntryTimer = setTimeout(() => {
+      setIsHeroVisible(true)
+    }, 100) // Delay sedikit setelah komponen di-mount
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+      clearTimeout(heroEntryTimer)
+    }
   }, [])
 
   const scatterProgress = Math.min(scrollY / 300, 1)
@@ -113,7 +123,12 @@ export default function AnimatedHero() {
   }
 
   return (
-    <section id="home" className="relative min-h-screen bg-gradient-to-br from-emerald-50 to-white overflow-hidden">
+    <section
+      id="home"
+      className={`relative min-h-screen bg-gradient-to-br from-emerald-50 to-lime-50 overflow-hidden transition-opacity duration-700 ease-out ${
+        isHeroVisible ? "opacity-100" : "opacity-0"
+      }`}
+    >
       {/* Garis SVG yang meliuk-liuk */}
       <div className="absolute inset-0" style={{ zIndex: 1 }}>
         <svg className="w-full h-full" viewBox="0 0 1200 800" fill="none">
