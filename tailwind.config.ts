@@ -68,40 +68,86 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        // Custom keyframes for intro animation
-        "drop-in-bounce": {
-          "0%": { opacity: "0", transform: "translateY(-200%) rotate(-90deg) scale(0.5)" },
-          "60%": { opacity: "1", transform: "translateY(10%) rotate(10deg) scale(1.05)" },
-          "80%": { transform: "translateY(-5%) rotate(-5deg) scale(0.98)" },
-          "100%": { transform: "translateY(0) rotate(0deg) scale(1)" },
+        // Keyframes for the "gila" intro animation
+        "logo-slam-in": {
+          "0%": { opacity: "1", transform: "translateY(-300%) rotate(-180deg) scale(0.2)" },
+          "50%": { opacity: "1", transform: "translateY(0) rotate(0deg) scale(1.2)" },
+          "70%": { transform: "translateY(-10%) scale(0.95)" },
+          "100%": { transform: "translateY(0) scale(1)" },
         },
-        "logo-pulse": {
-          "0%, 100%": { transform: "scale(1)", filter: "brightness(1)" },
-          "50%": { transform: "scale(1.1)", filter: "brightness(1.2)" },
+        "logo-vibrate": {
+          "0%, 100%": { transform: "translateY(0) rotate(0deg) scale(1)" },
+          "25%": { transform: "translateY(-5px) rotate(2deg) scale(1.01)" },
+          "50%": { transform: "translateY(5px) rotate(-2deg) scale(0.99)" },
+          "75%": { transform: "translateY(-5px) rotate(2deg) scale(1.01)" },
         },
-        "fall-out-spin": {
-          "0%": { opacity: "1", transform: "translateY(0) rotate(0deg) scale(1)" },
-          "100%": { opacity: "0", transform: "translateY(-150%) rotate(180deg) scale(0.5)" },
+        "logo-burst-out": {
+          "0%": { opacity: "1", transform: "scale(1) rotate(0deg)" },
+          "100%": { opacity: "0", transform: "scale(2) rotate(360deg)" },
         },
-        "bg-fade-in": {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
+        "bg-element-burst": {
+          "0%": { opacity: "0", transform: "scale(0) rotate(0deg)" },
+          "50%": { opacity: "1", transform: "scale(1) rotate(180deg)" },
+          "100%": { opacity: "0", transform: "scale(1.5) rotate(360deg)" },
         },
-        "bg-float": {
-          "0%, 100%": { transform: "translateY(0) translateX(0)" },
-          "50%": { transform: "translateY(-20px) translateX(10px)" },
+        "bg-element-float": {
+          "0%, 100%": { transform: "translate(0, 0) rotate(0deg)" },
+          "25%": { transform: "translate(10px, -15px) rotate(5deg)" },
+          "50%": { transform: "translate(-10px, 15px) rotate(-5deg)" },
+          "75%": { transform: "translate(10px, -15px) rotate(5deg)" },
+        },
+        "bg-fade-out-slide": {
+          "0%": { opacity: "1", transform: "translateY(0)" },
+          "100%": { opacity: "0", transform: "translateY(-100%)" },
+        },
+        // New keyframes for "lebih gila" effects
+        shockwave: {
+          "0%": {
+            transform: "scale(0)",
+            opacity: "1",
+            "box-shadow": "0 0 0 0px rgba(255, 193, 7, 0.7)",
+          } /* Amber-400 */,
+          "100%": { transform: "scale(2)", opacity: "0", "box-shadow": "0 0 0 50px rgba(255, 193, 7, 0)" },
+        },
+        "particle-spread": {
+          "0%": { opacity: "1", transform: "scale(1) translateX(0) translateY(0)" },
+          "100%": {
+            opacity: "0",
+            transform: "scale(0.2) translateX(var(--tw-particle-end-x)) translateY(var(--tw-particle-end-y))",
+          },
+        },
+        // Keyframes for modal animations (moved from inline style)
+        "fade-in-modal": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "scale-in-modal": {
+          from: {
+            opacity: "0",
+            transform: "scale(0.9) translateY(20px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "scale(1) translateY(0)",
+          },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        // Custom animations for intro
+        // Animations for the "gila" intro
         "intro-slam": "logo-slam-in 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards",
         "intro-vibrate": "logo-vibrate 0.5s ease-in-out infinite",
         "intro-burst": "logo-burst-out 0.8s ease-in forwards",
         "bg-burst-anim": "bg-element-burst 1s ease-out forwards",
         "bg-float-anim": "bg-element-float 6s ease-in-out infinite alternate",
         "bg-exit-anim": "bg-fade-out-slide 0.7s ease-in forwards",
+        // New animations for "lebih gila" effects
+        "shockwave-anim": "shockwave 0.7s ease-out forwards",
+        "particle-burst-anim": "particle-spread 0.8s ease-out forwards",
+        // Animations for modal (moved from inline style)
+        "fade-in-modal": "fade-in-modal 0.3s ease-out",
+        "scale-in-modal": "scale-in-modal 0.4s ease-out",
       },
     },
   },

@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef, useCallback } from "react"
 import Image from "next/image"
-// Removed: import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 interface GalleryItem {
   id: number
@@ -96,30 +95,49 @@ export default function AnimatedGallery() {
     },
   ]
 
+  // Filter item berdasarkan kategori yang dipilih
   const filteredItems =
     selectedCategory === "all" ? galleryItems : galleryItems.filter((item) => item.category === selectedCategory)
 
+  // Fungsi untuk navigasi gambar di carousel utama
   const nextImage = useCallback(() => {
+    if (filteredItems.length === 0) {
+      console.log("No items to navigate (nextImage).")
+      return // Mencegah error jika tidak ada item
+    }
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % filteredItems.length)
-  }, [filteredItems.length])
+    console.log("Next image clicked. New index:", (currentImageIndex + 1) % filteredItems.length)
+  }, [filteredItems.length, currentImageIndex]) // Tambahkan currentImageIndex ke dependencies
 
   const prevImage = useCallback(() => {
+    if (filteredItems.length === 0) {
+      console.log("No items to navigate (prevImage).")
+      return // Mencegah error jika tidak ada item
+    }
     setCurrentImageIndex((prevIndex) => (prevIndex - 1 + filteredItems.length) % filteredItems.length)
-  }, [filteredItems.length])
+    console.log("Prev image clicked. New index:", (currentImageIndex - 1 + filteredItems.length) % filteredItems.length)
+  }, [filteredItems.length, currentImageIndex]) // Tambahkan currentImageIndex ke dependencies
 
+  // Fungsi untuk navigasi gambar di modal
   const nextModalImage = useCallback(() => {
-    if (selectedImage) {
+    if (selectedImage && filteredItems.length > 0) {
       const currentIndex = filteredItems.findIndex((item) => item.id === selectedImage.id)
       const nextIndex = (currentIndex + 1) % filteredItems.length
       setSelectedImage(filteredItems[nextIndex])
+      console.log("Next modal image. New image ID:", filteredItems[nextIndex]?.id)
+    } else {
+      console.log("Cannot navigate modal (nextModalImage). No selected image or no filtered items.")
     }
   }, [selectedImage, filteredItems])
 
   const prevModalImage = useCallback(() => {
-    if (selectedImage) {
+    if (selectedImage && filteredItems.length > 0) {
       const currentIndex = filteredItems.findIndex((item) => item.id === selectedImage.id)
       const prevIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length
       setSelectedImage(filteredItems[prevIndex])
+      console.log("Prev modal image. New image ID:", filteredItems[prevIndex]?.id)
+    } else {
+      console.log("Cannot navigate modal (prevModalImage). No selected image or no filtered items.")
     }
   }, [selectedImage, filteredItems])
 
@@ -153,9 +171,14 @@ export default function AnimatedGallery() {
   }, [filteredItems.length, nextImage])
 
   useEffect(() => {
-    // Reset currentImageIndex when category changes
+    // Reset currentImageIndex saat kategori berubah
     setCurrentImageIndex(0)
-  }, [selectedCategory])
+    // Jika modal terbuka dan gambar yang dipilih tidak lagi ada di kategori baru, tutup modal
+    if (selectedImage && !filteredItems.some((item) => item.id === selectedImage.id)) {
+      setSelectedImage(null)
+      console.log("Modal closed because selected image is not in the new category.")
+    }
+  }, [selectedCategory, filteredItems, selectedImage]) // Tambahkan selectedImage ke dependency array
 
   const currentCarouselItem = filteredItems[currentImageIndex]
 
@@ -165,7 +188,7 @@ export default function AnimatedGallery() {
       ref={sectionRef}
       className="py-20 bg-gradient-to-br from-emerald-50 via-lime-50 to-teal-50 relative overflow-hidden"
     >
-      {/* Background decorations - Aligned with Hero, About, Team */}
+      {/* Background decorations */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-20 h-20 bg-emerald-200/20 rounded-full blur-xl animate-pulse"></div>
         <div className="absolute bottom-10 right-20 w-32 h-32 bg-teal-200/15 rounded-full blur-2xl animate-pulse delay-1000"></div>
@@ -232,7 +255,6 @@ export default function AnimatedGallery() {
               className="object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300"
             />
           </div>
-
           {/* Main Carousel Display (now takes 1fr) */}
           {filteredItems.length > 0 ? (
             <div
@@ -240,47 +262,49 @@ export default function AnimatedGallery() {
               style={{ zIndex: 10 }} // Ensure carousel is behind mascot
             >
               <div className="relative w-full h-[400px] md:h-[550px] overflow-hidden rounded-2xl">
-                <Image
-                  key={currentCarouselItem.id} // Key for re-render and transition
-                  src={currentCarouselItem.image || "/placeholder.svg"}
-                  alt={currentCarouselItem.title}
-                  fill
-                  className="object-cover transition-opacity duration-700 ease-in-out animate-fade-in"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                {/* Inner div for sliding effect */}
+                <div
+                  className="flex transition-transform duration-700 ease-in-out"
+                  style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+                >
+                  {filteredItems.map((item) => (
+                    <div key={item.id} className="w-full flex-shrink-0 relative h-[400px] md:h-[550px]">
+                      <Image src={item.image || "/placeholder.svg"} alt={item.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+
+                      {/* Image Info Overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                        <span className="bg-emerald-600 px-4 py-1.5 rounded-full text-sm font-medium capitalize mb-3 inline-block shadow-md">
+                          {item.category}
+                        </span>
+                        <h3 className="text-3xl md:text-4xl font-bold mb-2 leading-tight">{item.title}</h3>
+                        <p className="text-white/90 text-base md:text-lg mb-4 line-clamp-2">{item.description}</p>
+                        <button
+                          onClick={() => setSelectedImage(item)}
+                          className="inline-flex items-center text-emerald-200 hover:text-white font-semibold transition-colors group"
+                        >
+                          View Details
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
                 {/* Navigation Buttons (Text instead of Icons) */}
                 <button
                   onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full shadow-md hover:bg-white transition-all duration-200 hover:scale-105 font-semibold"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full shadow-md hover:bg-white transition-all duration-200 hover:scale-105 font-semibold z-20" // Added z-20
                   aria-label="Previous image"
                 >
                   Prev
                 </button>
                 <button
                   onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full shadow-md hover:bg-white transition-all duration-200 hover:scale-105 font-semibold"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full shadow-md hover:bg-white transition-all duration-200 hover:scale-105 font-semibold z-20" // Added z-20
                   aria-label="Next image"
                 >
                   Next
                 </button>
-
-                {/* Image Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <span className="bg-emerald-600 px-4 py-1.5 rounded-full text-sm font-medium capitalize mb-3 inline-block shadow-md">
-                    {currentCarouselItem.category}
-                  </span>
-                  <h3 className="text-3xl md:text-4xl font-bold mb-2 leading-tight">{currentCarouselItem.title}</h3>
-                  <p className="text-white/90 text-base md:text-lg mb-4 line-clamp-2">
-                    {currentCarouselItem.description}
-                  </p>
-                  <button
-                    onClick={() => setSelectedImage(currentCarouselItem)}
-                    className="inline-flex items-center text-emerald-200 hover:text-white font-semibold transition-colors group"
-                  >
-                    View Details
-                  </button>
-                </div>
               </div>
 
               {/* Dots Indicator */}
@@ -321,11 +345,11 @@ export default function AnimatedGallery() {
       {/* Enhanced Aesthetic Modal */}
       {selectedImage && (
         <div
-          className="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-fade-in-modal"
           onClick={() => setSelectedImage(null)}
         >
           <div
-            className="bg-gradient-to-br from-white to-gray-50 rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-2xl animate-scale-in border border-white/20"
+            className="bg-gradient-to-br from-white to-gray-50 rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-2xl animate-scale-in-modal border border-white/20"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative h-96 md:h-[550px]">
@@ -385,32 +409,6 @@ export default function AnimatedGallery() {
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes scale-in {
-          from { 
-            opacity: 0; 
-            transform: scale(0.9) translateY(20px); 
-          }
-          to { 
-            opacity: 1; 
-            transform: scale(1) translateY(0); 
-          }
-        }
-        
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-        
-        .animate-scale-in {
-          animation: scale-in 0.4s ease-out;
-        }
-      `}</style>
     </section>
   )
 }

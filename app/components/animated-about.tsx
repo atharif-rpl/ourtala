@@ -10,7 +10,7 @@ export default function AnimatedAbout() {
   const aboutRef = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false) // Untuk animasi saat masuk viewport
 
-  const images = ["/images/galery1.jpg", "/images/galery2.jpg", "/images/galery3.jpg", "/images/galery4.jpg"]
+  const images = ["/images/galeryabout.jpeg", "/images/galeryabout2.jpeg", "/images/galeryabout3.jpeg", "/images/galeryabout4.jpeg"]
 
   useEffect(() => {
     const animationFrame = () => {
